@@ -1,0 +1,2 @@
+@ECHO OFF
+"d:\AVR Tools\AvrAssembler2\avrasm2.exe" -S "E:\code\AVR\Delayed Fan Controller\labels.tmp" -fI -W+ie -o "E:\code\AVR\Delayed Fan Controller\DelayedFanController.hex" -d "E:\code\AVR\Delayed Fan Controller\DelayedFanController.obj" -e "E:\code\AVR\Delayed Fan Controller\DelayedFanController.eep" -m "E:\code\AVR\Delayed Fan Controller\DelayedFanController.map" "E:\code\AVR\Delayed Fan Controller\DelayedFanController.asm"
