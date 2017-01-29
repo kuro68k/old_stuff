@@ -1,0 +1,411 @@
+
+Rescue.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001ce  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  00000222  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 00000046  00000000  00000000  00000242  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   00000343  00000000  00000000  00000288  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 00000142  00000000  00000000  000005cb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   000002fd  00000000  00000000  0000070d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000050  00000000  00000000  00000a0c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    000000de  00000000  00000000  00000a5c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_loc    00000106  00000000  00000000  00000b3a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_ranges 00000090  00000000  00000000  00000c40  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+  14:	10 c0       	rjmp	.+32     	; 0x36 <__bad_interrupt>
+  16:	0f c0       	rjmp	.+30     	; 0x36 <__bad_interrupt>
+  18:	0e c0       	rjmp	.+28     	; 0x36 <__bad_interrupt>
+  1a:	0d c0       	rjmp	.+26     	; 0x36 <__bad_interrupt>
+  1c:	0c c0       	rjmp	.+24     	; 0x36 <__bad_interrupt>
+  1e:	0b c0       	rjmp	.+22     	; 0x36 <__bad_interrupt>
+  20:	0a c0       	rjmp	.+20     	; 0x36 <__bad_interrupt>
+  22:	09 c0       	rjmp	.+18     	; 0x36 <__bad_interrupt>
+  24:	08 c0       	rjmp	.+16     	; 0x36 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+  32:	64 d0       	rcall	.+200    	; 0xfc <main>
+  34:	ca c0       	rjmp	.+404    	; 0x1ca <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <HardwareInit>:
+
+#define	_BUTTON	(1<<1)
+
+void HardwareInit()
+{
+	DDRB	= ~(_RDY);			// all outputs except RDY (PB4)
+  38:	8f ee       	ldi	r24, 0xEF	; 239
+  3a:	87 bb       	out	0x17, r24	; 23
+	PORTB	= 0x00;				// no pull-up
+  3c:	18 ba       	out	0x18, r1	; 24
+
+	DDRC	= ~(_BUTTON);		// all outputs except BUTTON (PC1)
+  3e:	8d ef       	ldi	r24, 0xFD	; 253
+  40:	84 bb       	out	0x14, r24	; 20
+	PORTC	= (_BUTTON)|(_RST);	// pull-up and 12V off (PC0 = 1)
+  42:	83 e0       	ldi	r24, 0x03	; 3
+  44:	85 bb       	out	0x15, r24	; 21
+
+	DDRD	= 0xff;				// all outputs
+  46:	8f ef       	ldi	r24, 0xFF	; 255
+  48:	81 bb       	out	0x11, r24	; 17
+	PORTD	= 0x00;
+  4a:	12 ba       	out	0x12, r1	; 18
+}
+  4c:	08 95       	ret
+
+0000004e <sendcmd>:
+
+void sendcmd(unsigned char command)
+{
+	PORTC |= _XA1;
+  4e:	a5 e3       	ldi	r26, 0x35	; 53
+  50:	b0 e0       	ldi	r27, 0x00	; 0
+  52:	9c 91       	ld	r25, X
+  54:	90 61       	ori	r25, 0x10	; 16
+  56:	9c 93       	st	X, r25
+	PORTB &= ~(_XA0|_BS1);
+  58:	e8 e3       	ldi	r30, 0x38	; 56
+  5a:	f0 e0       	ldi	r31, 0x00	; 0
+  5c:	90 81       	ld	r25, Z
+  5e:	9d 7d       	andi	r25, 0xDD	; 221
+  60:	90 83       	st	Z, r25
+	
+	PORTD = command;
+  62:	82 bb       	out	0x12, r24	; 18
+
+	PORTC |= _XTAL1;
+  64:	8c 91       	ld	r24, X
+  66:	88 60       	ori	r24, 0x08	; 8
+  68:	8c 93       	st	X, r24
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+  6a:	20 ea       	ldi	r18, 0xA0	; 160
+  6c:	3f e0       	ldi	r19, 0x0F	; 15
+  6e:	c9 01       	movw	r24, r18
+  70:	01 97       	sbiw	r24, 0x01	; 1
+  72:	f1 f7       	brne	.-4      	; 0x70 <sendcmd+0x22>
+	_delay_ms(1);
+	PORTC &= ~(_XTAL1);
+  74:	8c 91       	ld	r24, X
+  76:	87 7f       	andi	r24, 0xF7	; 247
+  78:	8c 93       	st	X, r24
+  7a:	c9 01       	movw	r24, r18
+  7c:	01 97       	sbiw	r24, 0x01	; 1
+  7e:	f1 f7       	brne	.-4      	; 0x7c <sendcmd+0x2e>
+	_delay_ms(1);
+}
+  80:	08 95       	ret
+
+00000082 <writefuse>:
+
+void writefuse(unsigned char fuse, char highbyte)
+{
+	PORTC &= ~(_XA1);
+  82:	a5 e3       	ldi	r26, 0x35	; 53
+  84:	b0 e0       	ldi	r27, 0x00	; 0
+  86:	9c 91       	ld	r25, X
+  88:	9f 7e       	andi	r25, 0xEF	; 239
+  8a:	9c 93       	st	X, r25
+	PORTB |= _XA0;
+  8c:	e8 e3       	ldi	r30, 0x38	; 56
+  8e:	f0 e0       	ldi	r31, 0x00	; 0
+  90:	90 81       	ld	r25, Z
+  92:	90 62       	ori	r25, 0x20	; 32
+  94:	90 83       	st	Z, r25
+  96:	20 ea       	ldi	r18, 0xA0	; 160
+  98:	3f e0       	ldi	r19, 0x0F	; 15
+  9a:	f9 01       	movw	r30, r18
+  9c:	31 97       	sbiw	r30, 0x01	; 1
+  9e:	f1 f7       	brne	.-4      	; 0x9c <writefuse+0x1a>
+	_delay_ms(1);
+
+	PORTD = fuse;
+  a0:	82 bb       	out	0x12, r24	; 18
+	PORTC |= _XTAL1;
+  a2:	8c 91       	ld	r24, X
+  a4:	88 60       	ori	r24, 0x08	; 8
+  a6:	8c 93       	st	X, r24
+  a8:	c9 01       	movw	r24, r18
+  aa:	01 97       	sbiw	r24, 0x01	; 1
+  ac:	f1 f7       	brne	.-4      	; 0xaa <writefuse+0x28>
+	_delay_ms(1);
+	PORTC &= ~(_XTAL1);
+  ae:	8c 91       	ld	r24, X
+  b0:	87 7f       	andi	r24, 0xF7	; 247
+  b2:	8c 93       	st	X, r24
+
+	if (highbyte)
+  b4:	66 23       	and	r22, r22
+  b6:	31 f0       	breq	.+12     	; 0xc4 <writefuse+0x42>
+		PORTB |= _BS1;
+  b8:	e8 e3       	ldi	r30, 0x38	; 56
+  ba:	f0 e0       	ldi	r31, 0x00	; 0
+  bc:	80 81       	ld	r24, Z
+  be:	82 60       	ori	r24, 0x02	; 2
+  c0:	80 83       	st	Z, r24
+  c2:	05 c0       	rjmp	.+10     	; 0xce <writefuse+0x4c>
+	else
+		PORTB &= ~(_BS1);
+  c4:	e8 e3       	ldi	r30, 0x38	; 56
+  c6:	f0 e0       	ldi	r31, 0x00	; 0
+  c8:	80 81       	ld	r24, Z
+  ca:	8d 7f       	andi	r24, 0xFD	; 253
+  cc:	80 83       	st	Z, r24
+
+	PORTB &= ~(_WR);
+  ce:	e8 e3       	ldi	r30, 0x38	; 56
+  d0:	f0 e0       	ldi	r31, 0x00	; 0
+  d2:	80 81       	ld	r24, Z
+  d4:	8b 7f       	andi	r24, 0xFB	; 251
+  d6:	80 83       	st	Z, r24
+  d8:	80 ea       	ldi	r24, 0xA0	; 160
+  da:	9f e0       	ldi	r25, 0x0F	; 15
+  dc:	01 97       	sbiw	r24, 0x01	; 1
+  de:	f1 f7       	brne	.-4      	; 0xdc <writefuse+0x5a>
+	_delay_ms(1);
+	PORTB |= _WR;
+  e0:	80 81       	ld	r24, Z
+  e2:	84 60       	ori	r24, 0x04	; 4
+  e4:	80 83       	st	Z, r24
+  e6:	28 ee       	ldi	r18, 0xE8	; 232
+  e8:	33 e0       	ldi	r19, 0x03	; 3
+  ea:	40 e9       	ldi	r20, 0x90	; 144
+  ec:	51 e0       	ldi	r21, 0x01	; 1
+  ee:	ca 01       	movw	r24, r20
+  f0:	01 97       	sbiw	r24, 0x01	; 1
+  f2:	f1 f7       	brne	.-4      	; 0xf0 <writefuse+0x6e>
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+  f4:	21 50       	subi	r18, 0x01	; 1
+  f6:	30 40       	sbci	r19, 0x00	; 0
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+  f8:	d1 f7       	brne	.-12     	; 0xee <writefuse+0x6c>
+	_delay_ms(100);
+}
+  fa:	08 95       	ret
+
+000000fc <main>:
+
+int main()
+{
+  fc:	6f 92       	push	r6
+  fe:	7f 92       	push	r7
+ 100:	8f 92       	push	r8
+ 102:	9f 92       	push	r9
+ 104:	af 92       	push	r10
+ 106:	bf 92       	push	r11
+ 108:	cf 92       	push	r12
+ 10a:	df 92       	push	r13
+ 10c:	ef 92       	push	r14
+ 10e:	ff 92       	push	r15
+ 110:	0f 93       	push	r16
+ 112:	1f 93       	push	r17
+ 114:	cf 93       	push	r28
+ 116:	df 93       	push	r29
+	HardwareInit();
+ 118:	8f df       	rcall	.-226    	; 0x38 <HardwareInit>
+
+	for (;;)
+	{
+		while (PINC & _BUTTON) {}	// wait for button
+ 11a:	0f 2e       	mov	r0, r31
+ 11c:	f3 e3       	ldi	r31, 0x33	; 51
+ 11e:	cf 2e       	mov	r12, r31
+ 120:	dd 24       	eor	r13, r13
+ 122:	f0 2d       	mov	r31, r0
+
+		// Initialize pins to enter programming mode
+		PORTC &= ~(_PAGEL|_XA1|_BS2);
+ 124:	05 e3       	ldi	r16, 0x35	; 53
+ 126:	10 e0       	ldi	r17, 0x00	; 0
+		PORTB &= ~(_XA0|_BS1);
+ 128:	0f 2e       	mov	r0, r31
+ 12a:	f8 e3       	ldi	r31, 0x38	; 56
+ 12c:	ef 2e       	mov	r14, r31
+ 12e:	ff 24       	eor	r15, r15
+ 130:	f0 2d       	mov	r31, r0
+ 132:	0f 2e       	mov	r0, r31
+ 134:	f0 ea       	ldi	r31, 0xA0	; 160
+ 136:	af 2e       	mov	r10, r31
+ 138:	ff e0       	ldi	r31, 0x0F	; 15
+ 13a:	bf 2e       	mov	r11, r31
+ 13c:	f0 2d       	mov	r31, r0
+		sendcmd(0b01000000);
+		writefuse(HFUSE, 1);
+
+		// Program LFUSE
+		sendcmd(0b01000000);
+  		writefuse(LFUSE, 0);
+ 13e:	0f 2e       	mov	r0, r31
+ 140:	f0 e1       	ldi	r31, 0x10	; 16
+ 142:	8f 2e       	mov	r8, r31
+ 144:	f7 e2       	ldi	r31, 0x27	; 39
+ 146:	9f 2e       	mov	r9, r31
+ 148:	f0 2d       	mov	r31, r0
+ 14a:	c0 e9       	ldi	r28, 0x90	; 144
+ 14c:	d1 e0       	ldi	r29, 0x01	; 1
+
+		// Exit programming mode
+		PORTC |= _RST;
+
+		// Turn off outputs
+		PORTD = 0x00;
+ 14e:	0f 2e       	mov	r0, r31
+ 150:	f2 e3       	ldi	r31, 0x32	; 50
+ 152:	6f 2e       	mov	r6, r31
+ 154:	77 24       	eor	r7, r7
+ 156:	f0 2d       	mov	r31, r0
+{
+	HardwareInit();
+
+	for (;;)
+	{
+		while (PINC & _BUTTON) {}	// wait for button
+ 158:	f6 01       	movw	r30, r12
+ 15a:	80 81       	ld	r24, Z
+ 15c:	81 fd       	sbrc	r24, 1
+ 15e:	fc cf       	rjmp	.-8      	; 0x158 <main+0x5c>
+
+		// Initialize pins to enter programming mode
+		PORTC &= ~(_PAGEL|_XA1|_BS2);
+ 160:	f8 01       	movw	r30, r16
+ 162:	80 81       	ld	r24, Z
+ 164:	8b 7c       	andi	r24, 0xCB	; 203
+ 166:	80 83       	st	Z, r24
+		PORTB &= ~(_XA0|_BS1);
+ 168:	f7 01       	movw	r30, r14
+ 16a:	80 81       	ld	r24, Z
+ 16c:	8d 7d       	andi	r24, 0xDD	; 221
+ 16e:	80 83       	st	Z, r24
+	
+		// Enter programming mode
+		PORTB |= _VCC|_WR|_OE;
+ 170:	80 81       	ld	r24, Z
+ 172:	8d 60       	ori	r24, 0x0D	; 13
+ 174:	80 83       	st	Z, r24
+ 176:	c5 01       	movw	r24, r10
+ 178:	01 97       	sbiw	r24, 0x01	; 1
+ 17a:	f1 f7       	brne	.-4      	; 0x178 <main+0x7c>
+		_delay_ms(1);
+		PORTC &= ~(_RST);
+ 17c:	f8 01       	movw	r30, r16
+ 17e:	80 81       	ld	r24, Z
+ 180:	8e 7f       	andi	r24, 0xFE	; 254
+ 182:	80 83       	st	Z, r24
+ 184:	c5 01       	movw	r24, r10
+ 186:	01 97       	sbiw	r24, 0x01	; 1
+ 188:	f1 f7       	brne	.-4      	; 0x186 <main+0x8a>
+		_delay_ms(1);
+
+		// Program HFUSE
+		sendcmd(0b01000000);
+ 18a:	80 e4       	ldi	r24, 0x40	; 64
+ 18c:	60 df       	rcall	.-320    	; 0x4e <sendcmd>
+		writefuse(HFUSE, 1);
+ 18e:	8f ed       	ldi	r24, 0xDF	; 223
+ 190:	61 e0       	ldi	r22, 0x01	; 1
+ 192:	77 df       	rcall	.-274    	; 0x82 <writefuse>
+
+		// Program LFUSE
+		sendcmd(0b01000000);
+ 194:	80 e4       	ldi	r24, 0x40	; 64
+ 196:	5b df       	rcall	.-330    	; 0x4e <sendcmd>
+  		writefuse(LFUSE, 0);
+ 198:	82 e6       	ldi	r24, 0x62	; 98
+ 19a:	60 e0       	ldi	r22, 0x00	; 0
+ 19c:	72 df       	rcall	.-284    	; 0x82 <writefuse>
+ 19e:	94 01       	movw	r18, r8
+ 1a0:	ce 01       	movw	r24, r28
+ 1a2:	01 97       	sbiw	r24, 0x01	; 1
+ 1a4:	f1 f7       	brne	.-4      	; 0x1a2 <main+0xa6>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 1a6:	21 50       	subi	r18, 0x01	; 1
+ 1a8:	30 40       	sbci	r19, 0x00	; 0
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 1aa:	d1 f7       	brne	.-12     	; 0x1a0 <main+0xa4>
+
+		_delay_ms(1000);			// allow button to be released
+
+		// Exit programming mode
+		PORTC |= _RST;
+ 1ac:	f8 01       	movw	r30, r16
+ 1ae:	80 81       	ld	r24, Z
+ 1b0:	81 60       	ori	r24, 0x01	; 1
+ 1b2:	80 83       	st	Z, r24
+
+		// Turn off outputs
+		PORTD = 0x00;
+ 1b4:	f3 01       	movw	r30, r6
+ 1b6:	10 82       	st	Z, r1
+		PORTB &= ~(_VCC|_WR|_OE|_XA0|_BS1);
+ 1b8:	f7 01       	movw	r30, r14
+ 1ba:	80 81       	ld	r24, Z
+ 1bc:	80 7d       	andi	r24, 0xD0	; 208
+ 1be:	80 83       	st	Z, r24
+		PORTC &= ~(_PAGEL|_XA1|_BS2);
+ 1c0:	f8 01       	movw	r30, r16
+ 1c2:	80 81       	ld	r24, Z
+ 1c4:	8b 7c       	andi	r24, 0xCB	; 203
+ 1c6:	80 83       	st	Z, r24
+ 1c8:	c7 cf       	rjmp	.-114    	; 0x158 <main+0x5c>
+
+000001ca <_exit>:
+ 1ca:	f8 94       	cli
+
+000001cc <__stop_program>:
+ 1cc:	ff cf       	rjmp	.-2      	; 0x1cc <__stop_program>
