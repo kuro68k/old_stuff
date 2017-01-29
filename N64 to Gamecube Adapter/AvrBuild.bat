@@ -1,0 +1,2 @@
+@ECHO OFF
+"d:\AVR Tools\AvrAssembler2\avrasm2.exe" -S "E:\code\AVR\N64 to Gamecube Adapter\labels.tmp" -fI -W+ie -o "E:\code\AVR\N64 to Gamecube Adapter\N64toGC.hex" -d "E:\code\AVR\N64 to Gamecube Adapter\N64toGC.obj" -e "E:\code\AVR\N64 to Gamecube Adapter\N64toGC.eep" -m "E:\code\AVR\N64 to Gamecube Adapter\N64toGC.map" -l "E:\code\AVR\N64 to Gamecube Adapter\N64toGC.lst" "E:\code\AVR\N64 to Gamecube Adapter\N64toGC.asm"
