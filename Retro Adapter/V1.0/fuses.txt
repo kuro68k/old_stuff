@@ -1,0 +1,8 @@
+Low: 0xd9
+High: 0xbf
+
+Ext. Crystal/Res High Freq. Start-up Time: 16k + 64ms
+Brown-out detection enabled
+Brown-out level VCC=2.7V
+Boot Flash size = 1024 words Start address $0c00
+SPI enabled
