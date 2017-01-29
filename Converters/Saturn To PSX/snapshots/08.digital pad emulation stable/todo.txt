@@ -1,0 +1,2 @@
+- Check button mappings
+- Fix PS2 Saturn mode detection

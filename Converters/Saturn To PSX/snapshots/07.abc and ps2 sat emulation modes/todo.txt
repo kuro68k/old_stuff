@@ -1,0 +1,7 @@
+- Start+ABC mode
+
+- Enable Start+ on all applicable button mappings
+
+- Check button mappings
+
+- PS2 Saturn mode jumper

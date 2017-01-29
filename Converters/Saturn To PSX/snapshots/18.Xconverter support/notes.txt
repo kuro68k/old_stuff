@@ -1,0 +1,2 @@
+Some converters don't delay much after the ACK before starting the next byte, so the AVR's USI needs
+to be started before the ACK is sent.

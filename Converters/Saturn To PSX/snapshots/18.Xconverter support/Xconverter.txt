@@ -1,0 +1,7 @@
+﻿Old: Down = A,   Left = X,     Up = Y,   Right = B
+New: Down = B,   Left = Y,     Up = X, Trigger = A
+
+Old:		R2			[]			/\			 X
+New:		X			/\			[]			 R2
+
+4 1 6 3

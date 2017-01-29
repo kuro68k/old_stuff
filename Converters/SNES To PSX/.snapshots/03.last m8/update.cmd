@@ -1,0 +1,1 @@
+avrdude -p atmega8 -B 1 -V -U flash:w:SNES_to_PSX.hex

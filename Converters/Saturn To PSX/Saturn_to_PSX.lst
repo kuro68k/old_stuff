@@ -1,0 +1,1944 @@
+
+AVRASM ver. 2.1.42  E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.asm Sun Nov 28 18:13:49 2010
+
+E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.asm(6): Including file 'C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes\tn2313def.inc'
+E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.asm(293): Including file 'E:\code\AVR\Converters\Saturn To PSX\saturn.asm'
+E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.asm(294): Including file 'E:\code\AVR\Converters\Saturn To PSX\psx.asm'
+E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.asm(295): Including file 'E:\code\AVR\Converters\Saturn To PSX\eeprom.asm'
+                 
+                 
+                  
+                  	ATmega8 with internal oscillator ~8MHz
+                 */
+                 
+                 .include "tn2313def.inc"
+                 
+                 ;***** Created: 2010-02-25 11:46 ******* Source: ATtiny2313.xml **********
+                 ;*************************************************************************
+                 ;* A P P L I C A T I O N   N O T E   F O R   T H E   A V R   F A M I L Y
+                 ;* 
+                 ;* Number            : AVR000
+                 ;* File Name         : "tn2313def.inc"
+                 ;* Title             : Register/Bit Definitions for the ATtiny2313
+                 ;* Date              : 2010-02-25
+                 ;* Version           : 2.35
+                 ;* Support E-mail    : avr@atmel.com
+                 ;* Target MCU        : ATtiny2313
+                 ;* 
+                 ;* DESCRIPTION
+                 ;* When including this file in the assembly program file, all I/O register 
+                 ;* names and I/O register bit names appearing in the data book can be used.
+                 ;* In addition, the six registers forming the three data pointers X, Y and 
+                 ;* Z have been assigned names XL - ZH. Highest RAM address for Internal 
+                 ;* SRAM is also defined 
+                 ;* 
+                 ;* The Register names are represented by their hexadecimal address.
+                 ;* 
+                 ;* The Register Bit names are represented by their bit number (0-7).
+                 ;* 
+                 ;* Please observe the difference in using the bit names with instructions
+                 ;* such as "sbr"/"cbr" (set/clear bit in register) and "sbrs"/"sbrc"
+                 ;* (skip if bit in register set/cleared). The following example illustrates
+                 ;* this:
+                 ;* 
+                 ;* in    r16,PORTB             ;read PORTB latch
+                 ;* sbr   r16,(1<<PB6)+(1<<PB5) ;set PB6 and PB5 (use masks, not bit#)
+                 ;* out   PORTB,r16             ;output to PORTB
+                 ;* 
+                 ;* in    r16,TIFR              ;read the Timer Interrupt Flag Register
+                 ;* sbrc  r16,TOV0              ;test the overflow flag (use bit#)
+                 ;* rjmp  TOV0_is_set           ;jump if set
+                 ;* ...                         ;otherwise do something else
+                 ;*************************************************************************
+                 
+                 #ifndef _TN2313DEF_INC_
+                 #define _TN2313DEF_INC_
+                 
+                 
+                 #pragma partinc 0
+                 
+                 ; ***** SPECIFY DEVICE ***************************************************
+                 .device ATtiny2313
+                 #pragma AVRPART ADMIN PART_NAME ATtiny2313
+                 .equ	SIGNATURE_000	= 0x1e
+                 .equ	SIGNATURE_001	= 0x91
+                 .equ	SIGNATURE_002	= 0x0a
+                 
+                 #pragma AVRPART CORE CORE_VERSION V2
+                 #pragma AVRPART CORE NEW_INSTRUCTIONS lpm rd,z+
+                 
+                 
+                 ; ***** I/O REGISTER DEFINITIONS *****************************************
+                 ; NOTE:
+                 ; Definitions marked "MEMORY MAPPED"are extended I/O ports
+                 ; and cannot be used with IN/OUT instructions
+                 .equ	SREG	= 0x3f
+                 .equ	SPL	= 0x3d
+                 .equ	OCR0B	= 0x3c
+                 .equ	GIMSK	= 0x3b
+                 .equ	EIFR	= 0x3a
+                 .equ	TIMSK	= 0x39
+                 .equ	TIFR	= 0x38
+                 .equ	SPMCSR	= 0x37
+                 .equ	OCR0A	= 0x36
+                 .equ	MCUCR	= 0x35
+                 .equ	MCUSR	= 0x34
+                 .equ	TCCR0B	= 0x33
+                 .equ	TCNT0	= 0x32
+                 .equ	OSCCAL	= 0x31
+                 .equ	TCCR0A	= 0x30
+                 .equ	TCCR1A	= 0x2f
+                 .equ	TCCR1B	= 0x2e
+                 .equ	TCNT1L	= 0x2c
+                 .equ	TCNT1H	= 0x2d
+                 .equ	OCR1AL	= 0x2a
+                 .equ	OCR1AH	= 0x2b
+                 .equ	OCR1BL	= 0x28
+                 .equ	OCR1BH	= 0x29
+                 .equ	CLKPR	= 0x26
+                 .equ	ICR1L	= 0x24
+                 .equ	ICR1H	= 0x25
+                 .equ	GTCCR	= 0x23
+                 .equ	TCCR1C	= 0x22
+                 .equ	WDTCR	= 0x21
+                 .equ	PCMSK	= 0x20
+                 .equ	EEAR	= 0x1e
+                 .equ	EEDR	= 0x1d
+                 .equ	EECR	= 0x1c
+                 .equ	PORTA	= 0x1b
+                 .equ	DDRA	= 0x1a
+                 .equ	PINA	= 0x19
+                 .equ	PORTB	= 0x18
+                 .equ	DDRB	= 0x17
+                 .equ	PINB	= 0x16
+                 .equ	GPIOR2	= 0x15
+                 .equ	GPIOR1	= 0x14
+                 .equ	GPIOR0	= 0x13
+                 .equ	PORTD	= 0x12
+                 .equ	DDRD	= 0x11
+                 .equ	PIND	= 0x10
+                 .equ	USIDR	= 0x0f
+                 .equ	USISR	= 0x0e
+                 .equ	USICR	= 0x0d
+                 .equ	UDR	= 0x0c
+                 .equ	UCSRA	= 0x0b
+                 .equ	UCSRB	= 0x0a
+                 .equ	UBRRL	= 0x09
+                 .equ	ACSR	= 0x08
+                 .equ	UCSRC	= 0x03
+                 .equ	UBRRH	= 0x02
+                 .equ	DIDR	= 0x01
+                 
+                 
+                 ; ***** BIT DEFINITIONS **************************************************
+                 
+                 ; ***** PORTB ************************
+                 ; PORTB - Port B Data Register
+                 .equ	PORTB0	= 0	; Port B Data Register bit 0
+                 .equ	PB0	= 0	; For compatibility
+                 .equ	PORTB1	= 1	; Port B Data Register bit 1
+                 .equ	PB1	= 1	; For compatibility
+                 .equ	PORTB2	= 2	; Port B Data Register bit 2
+                 .equ	PB2	= 2	; For compatibility
+                 .equ	PORTB3	= 3	; Port B Data Register bit 3
+                 .equ	PB3	= 3	; For compatibility
+                 .equ	PORTB4	= 4	; Port B Data Register bit 4
+                 .equ	PB4	= 4	; For compatibility
+                 .equ	PORTB5	= 5	; Port B Data Register bit 5
+                 .equ	PB5	= 5	; For compatibility
+                 .equ	PORTB6	= 6	; Port B Data Register bit 6
+                 .equ	PB6	= 6	; For compatibility
+                 .equ	PORTB7	= 7	; Port B Data Register bit 7
+                 .equ	PB7	= 7	; For compatibility
+                 
+                 ; DDRB - Port B Data Direction Register
+                 .equ	DDB0	= 0	; Port B Data Direction Register bit 0
+                 .equ	DDB1	= 1	; Port B Data Direction Register bit 1
+                 .equ	DDB2	= 2	; Port B Data Direction Register bit 2
+                 .equ	DDB3	= 3	; Port B Data Direction Register bit 3
+                 .equ	DDB4	= 4	; Port B Data Direction Register bit 4
+                 .equ	DDB5	= 5	; Port B Data Direction Register bit 5
+                 .equ	DDB6	= 6	; Port B Data Direction Register bit 6
+                 .equ	DDB7	= 7	; Port B Data Direction Register bit 7
+                 
+                 ; PINB - Port B Input Pins
+                 .equ	PINB0	= 0	; Port B Input Pins bit 0
+                 .equ	PINB1	= 1	; Port B Input Pins bit 1
+                 .equ	PINB2	= 2	; Port B Input Pins bit 2
+                 .equ	PINB3	= 3	; Port B Input Pins bit 3
+                 .equ	PINB4	= 4	; Port B Input Pins bit 4
+                 .equ	PINB5	= 5	; Port B Input Pins bit 5
+                 .equ	PINB6	= 6	; Port B Input Pins bit 6
+                 .equ	PINB7	= 7	; Port B Input Pins bit 7
+                 
+                 
+                 ; ***** TIMER_COUNTER_0 **************
+                 ; TIMSK - Timer/Counter Interrupt Mask Register
+                 .equ	OCIE0A	= 0	; Timer/Counter0 Output Compare Match A Interrupt Enable
+                 .equ	TOIE0	= 1	; Timer/Counter0 Overflow Interrupt Enable
+                 .equ	OCIE0B	= 2	; Timer/Counter0 Output Compare Match B Interrupt Enable
+                 
+                 ; TIFR - Timer/Counter Interrupt Flag register
+                 .equ	OCF0A	= 0	; Timer/Counter0 Output Compare Flag 0A
+                 .equ	TOV0	= 1	; Timer/Counter0 Overflow Flag
+                 .equ	OCF0B	= 2	; Timer/Counter0 Output Compare Flag 0B
+                 
+                 ; OCR0B - Timer/Counter0 Output Compare Register
+                 .equ	OCR0_0	= 0	; 
+                 .equ	OCR0_1	= 1	; 
+                 .equ	OCR0_2	= 2	; 
+                 .equ	OCR0_3	= 3	; 
+                 .equ	OCR0_4	= 4	; 
+                 .equ	OCR0_5	= 5	; 
+                 .equ	OCR0_6	= 6	; 
+                 .equ	OCR0_7	= 7	; 
+                 
+                 ; OCR0A - Timer/Counter0 Output Compare Register
+                 .equ	OCR0A_0	= 0	; 
+                 .equ	OCR0A_1	= 1	; 
+                 .equ	OCR0A_2	= 2	; 
+                 .equ	OCR0A_3	= 3	; 
+                 .equ	OCR0A_4	= 4	; 
+                 .equ	OCR0A_5	= 5	; 
+                 .equ	OCR0A_6	= 6	; 
+                 .equ	OCR0A_7	= 7	; 
+                 
+                 ; TCCR0A - Timer/Counter  Control Register A
+                 .equ	WGM00	= 0	; Waveform Generation Mode
+                 .equ	WGM01	= 1	; Waveform Generation Mode
+                 .equ	COM0B0	= 4	; Compare Match Output B Mode
+                 .equ	COM0B1	= 5	; Compare Match Output B Mode
+                 .equ	COM0A0	= 6	; Compare Match Output A Mode
+                 .equ	COM0A1	= 7	; Compare Match Output A Mode
+                 
+                 ; TCNT0 - Timer/Counter0
+                 .equ	TCNT0_0	= 0	; 
+                 .equ	TCNT0_1	= 1	; 
+                 .equ	TCNT0_2	= 2	; 
+                 .equ	TCNT0_3	= 3	; 
+                 .equ	TCNT0_4	= 4	; 
+                 .equ	TCNT0_5	= 5	; 
+                 .equ	TCNT0_6	= 6	; 
+                 .equ	TCNT0_7	= 7	; 
+                 
+                 ; TCCR0B - Timer/Counter Control Register B
+                 .equ	TCCR0	= TCCR0B	; For compatibility
+                 .equ	CS00	= 0	; Clock Select
+                 .equ	CS01	= 1	; Clock Select
+                 .equ	CS02	= 2	; Clock Select
+                 .equ	WGM02	= 3	; 
+                 .equ	FOC0B	= 6	; Force Output Compare B
+                 .equ	FOC0A	= 7	; Force Output Compare B
+                 
+                 
+                 ; ***** TIMER_COUNTER_1 **************
+                 ; TIMSK - Timer/Counter Interrupt Mask Register
+                 .equ	ICIE1	= 3	; Timer/Counter1 Input Capture Interrupt Enable
+                 .equ	TICIE	= ICIE1	; For compatibility
+                 .equ	OCIE1B	= 5	; Timer/Counter1 Output CompareB Match Interrupt Enable
+                 .equ	OCIE1A	= 6	; Timer/Counter1 Output CompareA Match Interrupt Enable
+                 .equ	TOIE1	= 7	; Timer/Counter1 Overflow Interrupt Enable
+                 
+                 ; TIFR - Timer/Counter Interrupt Flag register
+                 .equ	ICF1	= 3	; Input Capture Flag 1
+                 .equ	OCF1B	= 5	; Output Compare Flag 1B
+                 .equ	OCF1A	= 6	; Output Compare Flag 1A
+                 .equ	TOV1	= 7	; Timer/Counter1 Overflow Flag
+                 
+                 ; TCCR1A - Timer/Counter1 Control Register A
+                 .equ	WGM10	= 0	; Pulse Width Modulator Select Bit 0
+                 .equ	PWM10	= WGM10	; For compatibility
+                 .equ	WGM11	= 1	; Pulse Width Modulator Select Bit 1
+                 .equ	PWM11	= WGM11	; For compatibility
+                 .equ	COM1B0	= 4	; Comparet Ouput Mode 1B, bit 0
+                 .equ	COM1B1	= 5	; Compare Output Mode 1B, bit 1
+                 .equ	COM1A0	= 6	; Comparet Ouput Mode 1A, bit 0
+                 .equ	COM1A1	= 7	; Compare Output Mode 1A, bit 1
+                 
+                 ; TCCR1B - Timer/Counter1 Control Register B
+                 .equ	CS10	= 0	; Clock Select bit 0
+                 .equ	CS11	= 1	; Clock Select 1 bit 1
+                 .equ	CS12	= 2	; Clock Select1 bit 2
+                 .equ	WGM12	= 3	; Waveform Generation Mode Bit 2
+                 .equ	CTC1	= WGM12	; For compatibility
+                 .equ	WGM13	= 4	; Waveform Generation Mode Bit 3
+                 .equ	ICES1	= 6	; Input Capture 1 Edge Select
+                 .equ	ICNC1	= 7	; Input Capture 1 Noise Canceler
+                 
+                 ; TCCR1C - Timer/Counter1 Control Register C
+                 .equ	FOC1B	= 6	; Force Output Compare for Channel B
+                 .equ	FOC1A	= 7	; Force Output Compare for Channel A
+                 
+                 
+                 ; ***** WATCHDOG *********************
+                 ; WDTCR - Watchdog Timer Control Register
+                 .equ	WDTCSR	= WDTCR	; For compatibility
+                 .equ	WDP0	= 0	; Watch Dog Timer Prescaler bit 0
+                 .equ	WDP1	= 1	; Watch Dog Timer Prescaler bit 1
+                 .equ	WDP2	= 2	; Watch Dog Timer Prescaler bit 2
+                 .equ	WDE	= 3	; Watch Dog Enable
+                 .equ	WDCE	= 4	; Watchdog Change Enable
+                 .equ	WDTOE	= WDCE	; For compatibility
+                 .equ	WDP3	= 5	; Watchdog Timer Prescaler Bit 3
+                 .equ	WDIE	= 6	; Watchdog Timeout Interrupt Enable
+                 .equ	WDIF	= 7	; Watchdog Timeout Interrupt Flag
+                 
+                 
+                 ; ***** EXTERNAL_INTERRUPT ***********
+                 ; GIMSK - General Interrupt Mask Register
+                 .equ	PCIE	= 5	; 
+                 .equ	INT0	= 6	; External Interrupt Request 0 Enable
+                 .equ	INT1	= 7	; External Interrupt Request 1 Enable
+                 
+                 ; EIFR - Extended Interrupt Flag Register
+                 .equ	GIFR	= EIFR	; For compatibility
+                 .equ	PCIF	= 5	; 
+                 .equ	INTF0	= 6	; External Interrupt Flag 0
+                 .equ	INTF1	= 7	; External Interrupt Flag 1
+                 
+                 
+                 ; ***** USART ************************
+                 ; UDR - USART I/O Data Register
+                 .equ	UDR0	= 0	; USART I/O Data Register bit 0
+                 .equ	UDR1	= 1	; USART I/O Data Register bit 1
+                 .equ	UDR2	= 2	; USART I/O Data Register bit 2
+                 .equ	UDR3	= 3	; USART I/O Data Register bit 3
+                 .equ	UDR4	= 4	; USART I/O Data Register bit 4
+                 .equ	UDR5	= 5	; USART I/O Data Register bit 5
+                 .equ	UDR6	= 6	; USART I/O Data Register bit 6
+                 .equ	UDR7	= 7	; USART I/O Data Register bit 7
+                 
+                 ; UCSRA - USART Control and Status Register A
+                 .equ	USR	= UCSRA	; For compatibility
+                 .equ	MPCM	= 0	; Multi-processor Communication Mode
+                 .equ	U2X	= 1	; Double the USART Transmission Speed
+                 .equ	UPE	= 2	; USART Parity Error
+                 .equ	PE	= UPE	; For compatibility
+                 .equ	DOR	= 3	; Data overRun
+                 .equ	FE	= 4	; Framing Error
+                 .equ	UDRE	= 5	; USART Data Register Empty
+                 .equ	TXC	= 6	; USART Transmitt Complete
+                 .equ	RXC	= 7	; USART Receive Complete
+                 
+                 ; UCSRB - USART Control and Status Register B
+                 .equ	UCR	= UCSRB	; For compatibility
+                 .equ	TXB8	= 0	; Transmit Data Bit 8
+                 .equ	RXB8	= 1	; Receive Data Bit 8
+                 .equ	UCSZ2	= 2	; Character Size
+                 .equ	CHR9	= UCSZ2	; For compatibility
+                 .equ	TXEN	= 3	; Transmitter Enable
+                 .equ	RXEN	= 4	; Receiver Enable
+                 .equ	UDRIE	= 5	; USART Data register Empty Interrupt Enable
+                 .equ	TXCIE	= 6	; TX Complete Interrupt Enable
+                 .equ	RXCIE	= 7	; RX Complete Interrupt Enable
+                 
+                 ; UCSRC - USART Control and Status Register C
+                 .equ	UCPOL	= 0	; Clock Polarity
+                 .equ	UCSZ0	= 1	; Character Size Bit 0
+                 .equ	UCSZ1	= 2	; Character Size Bit 1
+                 .equ	USBS	= 3	; Stop Bit Select
+                 .equ	UPM0	= 4	; Parity Mode Bit 0
+                 .equ	UPM1	= 5	; Parity Mode Bit 1
+                 .equ	UMSEL	= 6	; USART Mode Select
+                 
+                 .equ	UBRR	= UBRRL	; For compatibility
+                 
+                 ; ***** ANALOG_COMPARATOR ************
+                 ; ACSR - Analog Comparator Control And Status Register
+                 .equ	ACIS0	= 0	; Analog Comparator Interrupt Mode Select bit 0
+                 .equ	ACIS1	= 1	; Analog Comparator Interrupt Mode Select bit 1
+                 .equ	ACIC	= 2	; 
+                 .equ	ACIE	= 3	; Analog Comparator Interrupt Enable
+                 .equ	ACI	= 4	; Analog Comparator Interrupt Flag
+                 .equ	ACO	= 5	; Analog Compare Output
+                 .equ	ACBG	= 6	; Analog Comparator Bandgap Select
+                 .equ	ACD	= 7	; Analog Comparator Disable
+                 
+                 ; DIDR - Digital Input Disable Register 1
+                 .equ	AIN0D	= 0	; AIN0 Digital Input Disable
+                 .equ	AIN1D	= 1	; AIN1 Digital Input Disable
+                 
+                 
+                 ; ***** PORTD ************************
+                 ; PORTD - Data Register, Port D
+                 .equ	PORTD0	= 0	; 
+                 .equ	PD0	= 0	; For compatibility
+                 .equ	PORTD1	= 1	; 
+                 .equ	PD1	= 1	; For compatibility
+                 .equ	PORTD2	= 2	; 
+                 .equ	PD2	= 2	; For compatibility
+                 .equ	PORTD3	= 3	; 
+                 .equ	PD3	= 3	; For compatibility
+                 .equ	PORTD4	= 4	; 
+                 .equ	PD4	= 4	; For compatibility
+                 .equ	PORTD5	= 5	; 
+                 .equ	PD5	= 5	; For compatibility
+                 .equ	PORTD6	= 6	; 
+                 .equ	PD6	= 6	; For compatibility
+                 
+                 ; DDRD - Data Direction Register, Port D
+                 .equ	DDD0	= 0	; 
+                 .equ	DDD1	= 1	; 
+                 .equ	DDD2	= 2	; 
+                 .equ	DDD3	= 3	; 
+                 .equ	DDD4	= 4	; 
+                 .equ	DDD5	= 5	; 
+                 .equ	DDD6	= 6	; 
+                 
+                 ; PIND - Input Pins, Port D
+                 .equ	PIND0	= 0	; 
+                 .equ	PIND1	= 1	; 
+                 .equ	PIND2	= 2	; 
+                 .equ	PIND3	= 3	; 
+                 .equ	PIND4	= 4	; 
+                 .equ	PIND5	= 5	; 
+                 .equ	PIND6	= 6	; 
+                 
+                 
+                 ; ***** EEPROM ***********************
+                 ; EEAR - EEPROM Read/Write Access
+                 .equ	EEARL	= EEAR	; For compatibility
+                 .equ	EEAR0	= 0	; EEPROM Read/Write Access bit 0
+                 .equ	EEAR1	= 1	; EEPROM Read/Write Access bit 1
+                 .equ	EEAR2	= 2	; EEPROM Read/Write Access bit 2
+                 .equ	EEAR3	= 3	; EEPROM Read/Write Access bit 3
+                 .equ	EEAR4	= 4	; EEPROM Read/Write Access bit 4
+                 .equ	EEAR5	= 5	; EEPROM Read/Write Access bit 5
+                 .equ	EEAR6	= 6	; EEPROM Read/Write Access bit 6
+                 
+                 ; EEDR - EEPROM Data Register
+                 .equ	EEDR0	= 0	; EEPROM Data Register bit 0
+                 .equ	EEDR1	= 1	; EEPROM Data Register bit 1
+                 .equ	EEDR2	= 2	; EEPROM Data Register bit 2
+                 .equ	EEDR3	= 3	; EEPROM Data Register bit 3
+                 .equ	EEDR4	= 4	; EEPROM Data Register bit 4
+                 .equ	EEDR5	= 5	; EEPROM Data Register bit 5
+                 .equ	EEDR6	= 6	; EEPROM Data Register bit 6
+                 .equ	EEDR7	= 7	; EEPROM Data Register bit 7
+                 
+                 ; EECR - EEPROM Control Register
+                 .equ	EERE	= 0	; EEPROM Read Enable
+                 .equ	EEPE	= 1	; EEPROM Write Enable
+                 .equ	EEWE	= EEPE	; For compatibility
+                 .equ	EEMPE	= 2	; EEPROM Master Write Enable
+                 .equ	EEMWE	= EEMPE	; For compatibility
+                 .equ	EERIE	= 3	; EEProm Ready Interrupt Enable
+                 .equ	EEPM0	= 4	; 
+                 .equ	EEPM1	= 5	; 
+                 
+                 
+                 ; ***** PORTA ************************
+                 ; PORTA - Port A Data Register
+                 .equ	PORTA0	= 0	; Port A Data Register bit 0
+                 .equ	PA0	= 0	; For compatibility
+                 .equ	PORTA1	= 1	; Port A Data Register bit 1
+                 .equ	PA1	= 1	; For compatibility
+                 .equ	PORTA2	= 2	; Port A Data Register bit 2
+                 .equ	PA2	= 2	; For compatibility
+                 
+                 ; DDRA - Port A Data Direction Register
+                 .equ	DDA0	= 0	; Data Direction Register, Port A, bit 0
+                 .equ	DDA1	= 1	; Data Direction Register, Port A, bit 1
+                 .equ	DDA2	= 2	; Data Direction Register, Port A, bit 2
+                 
+                 ; PINA - Port A Input Pins
+                 .equ	PINA0	= 0	; Input Pins, Port A bit 0
+                 .equ	PINA1	= 1	; Input Pins, Port A bit 1
+                 .equ	PINA2	= 2	; Input Pins, Port A bit 2
+                 
+                 
+                 ; ***** CPU **************************
+                 ; SREG - Status Register
+                 .equ	SREG_C	= 0	; Carry Flag
+                 .equ	SREG_Z	= 1	; Zero Flag
+                 .equ	SREG_N	= 2	; Negative Flag
+                 .equ	SREG_V	= 3	; Two's Complement Overflow Flag
+                 .equ	SREG_S	= 4	; Sign Bit
+                 .equ	SREG_H	= 5	; Half Carry Flag
+                 .equ	SREG_T	= 6	; Bit Copy Storage
+                 .equ	SREG_I	= 7	; Global Interrupt Enable
+                 
+                 ; SPMCSR - Store Program Memory Control and Status register
+                 .equ	SPMEN	= 0	; Store Program Memory Enable
+                 .equ	PGERS	= 1	; Page Erase
+                 .equ	PGWRT	= 2	; Page Write
+                 .equ	RFLB	= 3	; Read Fuse and Lock Bits
+                 .equ	CTPB	= 4	; Clear Temporary Page Buffer
+                 
+                 ; MCUCR - MCU Control Register
+                 .equ	ISC00	= 0	; Interrupt Sense Control 0 bit 0
+                 .equ	ISC01	= 1	; Interrupt Sense Control 0 bit 1
+                 .equ	ISC10	= 2	; Interrupt Sense Control 1 bit 0
+                 .equ	ISC11	= 3	; Interrupt Sense Control 1 bit 1
+                 .equ	SM0	= 4	; Sleep Mode Select Bit 0
+                 .equ	SM	= SM0	; For compatibility
+                 .equ	SE	= 5	; Sleep Enable
+                 .equ	SM1	= 6	; Sleep Mode Select Bit 1
+                 .equ	PUD	= 7	; Pull-up Disable
+                 
+                 ; CLKPR - Clock Prescale Register
+                 .equ	CLKPS0	= 0	; Clock Prescaler Select Bit 0
+                 .equ	CLKPS1	= 1	; Clock Prescaler Select Bit 1
+                 .equ	CLKPS2	= 2	; Clock Prescaler Select Bit 2
+                 .equ	CLKPS3	= 3	; Clock Prescaler Select Bit 3
+                 .equ	CLKPCE	= 7	; Clock Prescaler Change Enable
+                 
+                 ; MCUSR - MCU Status register
+                 .equ	PORF	= 0	; Power-On Reset Flag
+                 .equ	EXTRF	= 1	; External Reset Flag
+                 .equ	BORF	= 2	; Brown-out Reset Flag
+                 .equ	WDRF	= 3	; Watchdog Reset Flag
+                 
+                 ; OSCCAL - Oscillator Calibration Register
+                 .equ	CAL0	= 0	; Oscillatro Calibration Value Bit 0
+                 .equ	CAL1	= 1	; Oscillatro Calibration Value Bit 1
+                 .equ	CAL2	= 2	; Oscillatro Calibration Value Bit 2
+                 .equ	CAL3	= 3	; Oscillatro Calibration Value Bit 3
+                 .equ	CAL4	= 4	; Oscillatro Calibration Value Bit 4
+                 .equ	CAL5	= 5	; Oscillatro Calibration Value Bit 5
+                 .equ	CAL6	= 6	; Oscillatro Calibration Value Bit 6
+                 
+                 ; GTCCR - General Timer Counter Control Register
+                 .equ	SFIOR	= GTCCR	; For compatibility
+                 .equ	PSR10	= 0	; 
+                 
+                 ; PCMSK - Pin-Change Mask register
+                 .equ	PCINT0	= 0	; Pin-Change Interrupt 0
+                 .equ	PCINT1	= 1	; Pin-Change Interrupt 1
+                 .equ	PCINT2	= 2	; Pin-Change Interrupt 2
+                 .equ	PCINT3	= 3	; Pin-Change Interrupt 3
+                 .equ	PCINT4	= 4	; Pin-Change Interrupt 4
+                 .equ	PCINT5	= 5	; Pin-Change Interrupt 5
+                 .equ	PCINT6	= 6	; Pin-Change Interrupt 6
+                 .equ	PCINT7	= 7	; Pin-Change Interrupt 7
+                 
+                 ; GPIOR2 - General Purpose I/O Register 2
+                 .equ	GPIOR20	= 0	; General Purpose I/O Register 2 bit 0
+                 .equ	GPIOR21	= 1	; General Purpose I/O Register 2 bit 1
+                 .equ	GPIOR22	= 2	; General Purpose I/O Register 2 bit 2
+                 .equ	GPIOR23	= 3	; General Purpose I/O Register 2 bit 3
+                 .equ	GPIOR24	= 4	; General Purpose I/O Register 2 bit 4
+                 .equ	GPIOR25	= 5	; General Purpose I/O Register 2 bit 5
+                 .equ	GPIOR26	= 6	; General Purpose I/O Register 2 bit 6
+                 .equ	GPIOR27	= 7	; General Purpose I/O Register 2 bit 7
+                 
+                 ; GPIOR1 - General Purpose I/O Register 1
+                 .equ	GPIOR10	= 0	; General Purpose I/O Register 1 bit 0
+                 .equ	GPIOR11	= 1	; General Purpose I/O Register 1 bit 1
+                 .equ	GPIOR12	= 2	; General Purpose I/O Register 1 bit 2
+                 .equ	GPIOR13	= 3	; General Purpose I/O Register 1 bit 3
+                 .equ	GPIOR14	= 4	; General Purpose I/O Register 1 bit 4
+                 .equ	GPIOR15	= 5	; General Purpose I/O Register 1 bit 5
+                 .equ	GPIOR16	= 6	; General Purpose I/O Register 1 bit 6
+                 .equ	GPIOR17	= 7	; General Purpose I/O Register 1 bit 7
+                 
+                 ; GPIOR0 - General Purpose I/O Register 0
+                 .equ	GPIOR00	= 0	; General Purpose I/O Register 0 bit 0
+                 .equ	GPIOR01	= 1	; General Purpose I/O Register 0 bit 1
+                 .equ	GPIOR02	= 2	; General Purpose I/O Register 0 bit 2
+                 .equ	GPIOR03	= 3	; General Purpose I/O Register 0 bit 3
+                 .equ	GPIOR04	= 4	; General Purpose I/O Register 0 bit 4
+                 .equ	GPIOR05	= 5	; General Purpose I/O Register 0 bit 5
+                 .equ	GPIOR06	= 6	; General Purpose I/O Register 0 bit 6
+                 .equ	GPIOR07	= 7	; General Purpose I/O Register 0 bit 7
+                 
+                 
+                 ; ***** USI **************************
+                 ; USIDR - USI Data Register
+                 .equ	USIDR0	= 0	; USI Data Register bit 0
+                 .equ	USIDR1	= 1	; USI Data Register bit 1
+                 .equ	USIDR2	= 2	; USI Data Register bit 2
+                 .equ	USIDR3	= 3	; USI Data Register bit 3
+                 .equ	USIDR4	= 4	; USI Data Register bit 4
+                 .equ	USIDR5	= 5	; USI Data Register bit 5
+                 .equ	USIDR6	= 6	; USI Data Register bit 6
+                 .equ	USIDR7	= 7	; USI Data Register bit 7
+                 
+                 ; USISR - USI Status Register
+                 .equ	USICNT0	= 0	; USI Counter Value Bit 0
+                 .equ	USICNT1	= 1	; USI Counter Value Bit 1
+                 .equ	USICNT2	= 2	; USI Counter Value Bit 2
+                 .equ	USICNT3	= 3	; USI Counter Value Bit 3
+                 .equ	USIDC	= 4	; Data Output Collision
+                 .equ	USIPF	= 5	; Stop Condition Flag
+                 .equ	USIOIF	= 6	; Counter Overflow Interrupt Flag
+                 .equ	USISIF	= 7	; Start Condition Interrupt Flag
+                 
+                 ; USICR - USI Control Register
+                 .equ	USITC	= 0	; Toggle Clock Port Pin
+                 .equ	USICLK	= 1	; Clock Strobe
+                 .equ	USICS0	= 2	; USI Clock Source Select Bit 0
+                 .equ	USICS1	= 3	; USI Clock Source Select Bit 1
+                 .equ	USIWM0	= 4	; USI Wire Mode Bit 0
+                 .equ	USIWM1	= 5	; USI Wire Mode Bit 1
+                 .equ	USIOIE	= 6	; Counter Overflow Interrupt Enable
+                 .equ	USISIE	= 7	; Start Condition Interrupt Enable
+                 
+                 
+                 
+                 ; ***** LOCKSBITS ********************************************************
+                 .equ	LB1	= 0	; Lockbit
+                 .equ	LB2	= 1	; Lockbit
+                 
+                 
+                 ; ***** FUSES ************************************************************
+                 ; LOW fuse bits
+                 .equ	CKSEL0	= 0	; Select Clock Source
+                 .equ	CKSEL1	= 1	; Select Clock Source
+                 .equ	CKSEL2	= 2	; Select Clock Source
+                 .equ	CKSEL3	= 3	; Select Clock Source
+                 .equ	SUT0	= 4	; Select start-up time
+                 .equ	SUT1	= 5	; Select start-up time
+                 .equ	CKOUT	= 6	; Clock output
+                 .equ	CKDIV8	= 7	; Divide clock by 8
+                 
+                 ; HIGH fuse bits
+                 .equ	BODLEVEL0	= 0	; Brown-out Detector trigger level
+                 .equ	BODLEVEL1	= 1	; Brown-out Detector trigger level
+                 .equ	BODLEVEL2	= 2	; Brown-out Detector trigger level
+                 .equ	EESAVE	= 3	; EEPROM memory is preserved through chip erase
+                 .equ	WDTON	= 4	; Watchdog Timer Always On
+                 .equ	SPIEN	= 5	; Enable Serial programming and Data Downloading
+                 .equ	DWEN	= 6	; debugWIRE Enable
+                 .equ	RSTDISBL	= 7	; External reset disable
+                 
+                 ; EXTENDED fuse bits
+                 .equ	SELFPRGEN	= 0	; Self Programming Enable
+                 
+                 
+                 
+                 ; ***** CPU REGISTER DEFINITIONS *****************************************
+                 .def	XH	= r27
+                 .def	XL	= r26
+                 .def	YH	= r29
+                 .def	YL	= r28
+                 .def	ZH	= r31
+                 .def	ZL	= r30
+                 
+                 
+                 
+                 ; ***** DATA MEMORY DECLARATIONS *****************************************
+                 .equ	FLASHEND	= 0x03ff	; Note: Word address
+                 .equ	IOEND	= 0x003f
+                 .equ	SRAM_START	= 0x0060
+                 .equ	SRAM_SIZE	= 128
+                 .equ	RAMEND	= 0x00df
+                 .equ	XRAMEND	= 0x0000
+                 .equ	E2END	= 0x007f
+                 .equ	EEPROMEND	= 0x007f
+                 .equ	EEADRBITS	= 7
+                 #pragma AVRPART MEMORY PROG_FLASH 2048
+                 #pragma AVRPART MEMORY EEPROM 128
+                 #pragma AVRPART MEMORY INT_SRAM SIZE 128
+                 #pragma AVRPART MEMORY INT_SRAM START_ADDR 0x60
+                 
+                 
+                 
+                 ; ***** BOOTLOADER DECLARATIONS ******************************************
+                 .equ	NRWW_START_ADDR	= 0x0
+                 .equ	NRWW_STOP_ADDR	= 0x3ff
+                 .equ	RWW_START_ADDR	= 0x0
+                 .equ	RWW_STOP_ADDR	= 0x0
+                 .equ	PAGESIZE	= 16
+                 
+                 
+                 
+                 ; ***** INTERRUPT VECTORS ************************************************
+                 .equ	INT0addr	= 0x0001	; External Interrupt Request 0
+                 .equ	INT1addr	= 0x0002	; External Interrupt Request 1
+                 .equ	ICP1addr	= 0x0003	; Timer/Counter1 Capture Event
+                 .equ	OC1Aaddr	= 0x0004	; Timer/Counter1 Compare Match A
+                 .equ	OC1addr	= 0x0004	; For compatibility
+                 .equ	OVF1addr	= 0x0005	; Timer/Counter1 Overflow
+                 .equ	OVF0addr	= 0x0006	; Timer/Counter0 Overflow
+                 .equ	URXCaddr	= 0x0007	; USART, Rx Complete
+                 .equ	URXC0addr	= 0x0007	; For compatibility
+                 .equ	UDREaddr	= 0x0008	; USART Data Register Empty
+                 .equ	UDRE0addr	= 0x0008	; For compatibility
+                 .equ	UTXCaddr	= 0x0009	; USART, Tx Complete
+                 .equ	UTXC0addr	= 0x0009	; For compatibility
+                 .equ	ACIaddr	= 0x000a	; Analog Comparator
+                 .equ	PCIaddr	= 0x000b	; 
+                 .equ	OC1Baddr	= 0x000c	; 
+                 .equ	OC0Aaddr	= 0x000d	; 
+                 .equ	OC0Baddr	= 0x000e	; 
+                 .equ	USI_STARTaddr	= 0x000f	; USI Start Condition
+                 .equ	USI_OVFaddr	= 0x0010	; USI Overflow
+                 .equ	ERDYaddr	= 0x0011	; 
+                 .equ	WDTaddr	= 0x0012	; Watchdog Timer Overflow
+                 
+                 .equ	INT_VECTORS_SIZE	= 19	; size in words
+                 
+                 #endif  /* _TN2313DEF_INC_ */
+                 
+                 ; ***** END OF FILE ******************************************************
+                 
+                 ;----------------------------------------------------------------------
+                 ; Debug and build options
+                 ;----------------------------------------------------------------------
+                 
+                 #define build_standard
+                 ;#define build_kyle
+                 // must also enable build_standard 
+                 #define build_xcon
+                 ;#define debug_pad_always_connected
+                 
+                 .MACRO	DEBUGP
+                 		sbi		DDRB, PS_ACK
+                 		cbi		DDRB, PS_ACK
+                 .ENDMACRO
+                 
+                 ;----------------------------------------------------------------------
+                 ; Register and I/O definitions
+                 ;----------------------------------------------------------------------
+                 
+                 ; status registers
+                 .def	bmap			= R1	; button mapping, bit 7 af def. on/off, bit 6 tourn. mode
+                 .def	conn			= R2	; pad connected flag
+                 .def	bheld			= R3	; start button held counter
+                 .def	afbutton		= R4	; flag for autofire button on/off
+                 .def	autospeed		= R5	; autofire speed
+                 .def	emumode			= R6	; 0 = normal mode, 1 = PS2 Saturn Emulation mode
+                 .def	tmode			= R7	; 0 = normal mode, 1 = tournament mode
+                 
+                 ; autofire
+                 .def	afflag			= R10	; toggled by timer1 interrupt
+                 .def	sregsave		= R11	; sreg save for interrupt
+                 
+                 ; LED flashing
+                 .def	fcount			= R12
+                 .def	fmask			= R13
+                 .def	fstate			= R14
+                 
+                 ; working registers
+                 .def	temp0			= R16
+                 .def	temp1			= R17
+                 .def	temp2			= R18
+                 .def	temp3			= R19
+                 .def	temp4			= R20
+                 
+                 ; start button flag
+                 .def	startf			= R21
+                 
+                 ; PORT shadows for Saturn I/O
+                 .def	psx0			= R24
+                 .def	psx1			= R25
+                 
+                 ; Saturn pins
+                 .equ	SAT_TR	=	0	; PORTD
+                 .equ	SAT_TH	=	1	;
+                 .equ	SAT_RT	=	2	;
+                 .equ	SAT_LF	=	3	;
+                 .equ	SAT_DN	=	4	;
+                 .equ	SAT_UP	=	5	;
+                 .equ	SAT_TL	=	0	; PORTA
+                 
+                 ; PSX pins
+                 .equ	PS_ATT	=	3	; PORTB
+                 .equ	PS_ACK	=	4	;
+                 .equ	PS_CMD	=	5	;
+                 .equ	PS_DAT	=	6	;
+                 .equ	PS_CLK	=	7	;
+                 
+                 ; LED
+                 .equ	LEDPIN	=	1	; PORTA
+                 
+                 ; Jumpers
+                 .equ	J_PSS	=	6	; PORTD
+                 
+                 ; Autofire speed settings, 16 bit counter with prescaler = 64
+                 .equ	AFLOH	=	0x44	; 7.5Hz
+                 .equ	AFLOL	=	0xd4
+                 .equ	AFNOH	=	0x22	; 15Hz
+                 .equ	AFNOL	=	0x70
+                 .equ	AFHIH	=	0x11	; 30Hz
+                 .equ	AFHIL	=	0x35
+                 
+                 ; Start button hold time
+                 .equ	BHTIME1	=	64		; enter setup mode time
+                 .equ	BHTIME2	=	32		; leave setup mode time
+                 
+                 ; Highest button map available
+                 .equ	HIGHMAP	=	6
+                 
+                 ;----------------------------------------------------------------------
+                 ; Vector table
+                 ;----------------------------------------------------------------------
+                 
+                 .cseg
+                 
+                 .org 0
+000000 c023      		rjmp	reset		;RESET External Pin, Power-on Reset, Brown-out, and Watchdog Reset
+000001 9518      		reti				;INT0 External Interrupt Request 0
+000002 9518      		reti				;INT1 External Interrupt Request 1
+000003 9518      		reti				;TIMER1 CAPT Timer/Counter1 Capture Event
+000004 c00e      		rjmp	afint		;TIMER1 COMPA Timer/Counter1 Compare Match A
+000005 9518      		reti				;TIMER1 OVF Timer/Counter1 Overflow
+000006 c010      		rjmp	flint		;TIMER0 OVF Timer/Counter0 Overflow
+000007 9518      		reti				;USART, RXC USART, Rx Complete
+000008 9518      		reti				;USART, UDRE USART Data Register Empty
+000009 9518      		reti				;USART, TXC USART, Tx Complete
+00000a 9518      		reti				;ANA_COMP Analog Comparator
+00000b 9518      		reti				;PCINT
+00000c 9518      		reti				;TIMER1 COMPB Match B
+00000d 9518      		reti				;TIMER0 COMPA Match A
+00000e 9518      		reti				;TIMER0 COMPB Match B
+00000f 9518      		reti				;USI START
+000010 9518      		reti				;USI OVERFLOW
+000011 9518      		reti				;EE READY
+000012 9518      		reti				;WDT OVERFLOW
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Autofire interrupt on TIMER1 overflow
+                 ;----------------------------------------------------------------------
+                 
+                 afint:
+000013 b6bf      		in		sregsave, sreg
+000014 94a0      		com		afflag
+000015 bebf      		out		sreg, sregsave
+000016 9518      		reti
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; LED flash interrupt on TIMER0 overflow
+                 ;----------------------------------------------------------------------
+                 
+                 flint:
+000017 b6bf      		in		sregsave, sreg
+000018 9433      		inc		bheld
+000019 fcd7      		sbrc	fmask, 7				; enable bit
+00001a c007      		rjmp	flint_exit
+00001b 94c3      		inc		fcount
+00001c 20cd      		and		fcount, fmask
+00001d f421      		brne	flint_exit
+                 
+00001e 9ad9      		sbi		PORTA, LEDPIN
+00001f 94e0      		com		fstate
+000020 fee0      		sbrs	fstate, 0
+000021 98d9      		cbi		PORTA, LEDPIN
+                 
+                 flint_exit:
+000022 bebf      		out		sreg, sregsave
+000023 9518      		reti
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Reset
+                 ;----------------------------------------------------------------------
+                 
+                 reset:
+000024 ed0f      		ldi		temp0, LOW(RAMEND)			; initialization of stack
+000025 bf0d      		out		SPL, temp0
+                 
+                 		;ldi		ZH, HIGH(bit_reverse_lut*2)	; prepare lookup table pointer
+                 
+000026 e00f      		ldi		temp0, 0x0f
+000027 2ed0      		mov		fmask, temp0
+                 
+                 		; PORTA setup
+000028 e003      		ldi		temp0, 0b00000011			; TL and LED as outputs, J_PSS as input
+000029 bb0a      		out		DDRA, temp0
+00002a ef0f      		ldi		temp0, 0xff					; TL/LED high, pull up on J_PSS
+00002b bb0b      		out		PORTA, temp0
+                 
+                 		; PORTB setup
+00002c e000      		ldi		temp0, 0x00					; all inputs
+00002d bb07      		out		DDRB, temp0
+00002e ea0f      		ldi		temp0, ~((1<<PS_DAT)|(1<<PS_ACK))	; DAT/ACK float, rest have pull-ups
+00002f bb08      		out		PORTB, temp0
+                 
+                 		; SPI interface
+000030 e100      		ldi		temp0, (1<<USIWM0)				; Three-wire mode
+000031 6008      		ori		temp0, (1<<USICS1)				; Positive edge shift, count on both edges
+000032 b90d      		out		USICR, temp0
+                 
+                 		; PORTD setup
+000033 e003      		ldi		temp0, (1<<SAT_TR)|(1<<SAT_TH)	; TR/TH outputs, rest inputs
+000034 bb01      		out		DDRD, temp0
+000035 ef0f      		ldi		temp0, 0xff						; TR/TH start high, pull-ups
+000036 bb02      		out		PORTD, temp0
+                 
+                 		; set up timer0 as LED flasher
+000037 e000      		ldi		temp0, 0					; no PWM etc
+000038 bf00      		out		TCCR0A, temp0
+000039 e005      		ldi		temp0, (1<<CS02)|(1<<CS00)	; 1024 prescaler
+00003a bf03      		out		TCCR0B, temp0
+00003b b709      		in		temp0, TIMSK
+00003c 6002      		ori		temp0, (1<<TOIE0)
+00003d bf09      		out		TIMSK, temp0
+                 
+                 		; set up timer1 as autofire toggle
+00003e e000      		ldi		temp0, 0					; no PWM etc
+00003f bd0f      		out		TCCR1A, temp0
+000040 e003      		ldi		temp0, (1<<CS11)|(1<<CS10)	; 64 prescaler
+000041 6008      		ori		temp0, (1<<WGM12)			; CTC mode
+000042 bd0e      		out		TCCR1B, temp0
+000043 e202      		ldi		temp0, AFNOH				; normal autofire speed
+000044 bd0b      		out		OCR1AH, temp0
+000045 e700      		ldi		temp0, AFNOL
+000046 bd0a      		out		OCR1AL, temp0
+000047 b709      		in		temp0, TIMSK
+000048 6400      		ori		temp0, (1<<OCIE1A)
+000049 bf09      		out		TIMSK, temp0
+                 
+00004a 2422      		clr		conn
+00004b 2411      		clr		bmap
+00004c 2755      		clr		startf
+00004d 2444      		clr		afbutton
+00004e 24aa      		clr		afflag
+00004f 2433      		clr		bheld
+000050 2455      		clr		autospeed
+000051 2466      		clr		emumode
+000052 2477      		clr		tmode
+                 
+000053 9478      		sei
+                 
+                 ;----------------------------------------------------------------------
+                 ; Wait for controller to be connected and then set button mapping
+                 ;----------------------------------------------------------------------
+                 
+                 wait_conn:
+000054 e00f      		ldi		temp0, 0x0f				; start slow flashing
+000055 d013      		rcall	setflash
+                 
+000056 d02e      		rcall	wait_saturn_conn		
+000057 c0ad      		rjmp	psx_mode
+                 
+                 ;----------------------------------------------------------------------
+                 ; 250ms delay for things to settle
+                 ;----------------------------------------------------------------------
+                 
+                 delay250ms:
+000058 930f      		push	temp0
+000059 931f      		push	temp1
+00005a 932f      		push	temp2
+00005b e204      		ldi		temp0, 0x24
+                 set_loop_0:
+00005c eb1c      		ldi		temp1, 0xbc
+                 set_loop_1:
+00005d e520      		ldi		temp2, 0x50		;0xc4 = 500ms
+                 set_loop_2:
+00005e 952a      		dec		temp2
+00005f f7f1      		brne	set_loop_2
+000060 95a8      		wdr
+000061 951a      		dec		temp1
+000062 f7d1      		brne	set_loop_1
+000063 950a      		dec		temp0
+000064 f7b9      		brne	set_loop_0
+000065 912f      		pop		temp2
+000066 911f      		pop		temp1
+000067 910f      		pop		temp0
+000068 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Set the LED flashing
+                 ;
+                 ; temp0, flashing rate mask, 0 for flashing off
+                 ; temp0 trashed
+                 ;----------------------------------------------------------------------
+                 
+                 setflash:
+000069 2300      		tst		temp0
+00006a f029      		breq	setflash_off
+                 
+                 		; turn on flashing
+00006b 2ed0      		mov		fmask, temp0
+00006c ef0f      		ldi		temp0, 0xff
+00006d 2ee0      		mov		fstate, temp0
+00006e 9ad9      		sbi		PORTA, LEDPIN
+00006f 9508      		ret
+                 
+                 setflash_off:
+000070 2d0d      		mov		temp0, fmask
+000071 6800      		ori		temp0, (1<<7)		; disabled bit
+000072 2ed0      		mov		fmask, temp0
+000073 98d9      		cbi		PORTA, LEDPIN
+000074 9508      		ret
+                 
+                 
+                 .include "saturn.asm"
+                 
+                 ; Check Saturn pad is connected
+                 ;----------------------------------------------------------------------
+                 
+                 check_sat_con:
+                 #ifdef debug_pad_always_connected
+                 #endif
+                 
+                 		; TH = 1, TR = 1
+000075 9a91      		sbi		PORTD, SAT_TH
+000076 9a90      		sbi		PORTD, SAT_TR
+000077 d084      		rcall	sat_delay			; 2us delay
+000078 b320      		in		temp2, PIND
+                 
+                 		; check controller is actually connected
+                 		; do three checks, all must pass for controller to be detected
+000079 e000      		ldi		temp0, 0
+00007a ff25      		sbrs	temp2, SAT_UP		; Up = 0
+00007b 9503      		inc		temp0
+00007c ff24      		sbrs	temp2, SAT_DN		; Down = 0
+00007d 9503      		inc		temp0
+00007e fd23      		sbrc	temp2, SAT_LF		; Left = 1
+00007f 9503      		inc		temp0
+                 
+000080 3003      		cpi		temp0, 3
+000081 f409      		brne	sat_disconnected
+000082 9508      		ret
+                 
+                 sat_disconnected:
+000083 2422      		clr		conn
+000084 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Wait for Saturn to be connected and then check tournament mode
+                 ;----------------------------------------------------------------------
+                 
+                 wait_saturn_conn:
+                 		; TH = 1, TR = 1
+000085 9a91      		sbi		PORTD, SAT_TH
+000086 9a90      		sbi		PORTD, SAT_TR
+000087 d074      		rcall	sat_delay
+                 
+                 wait_saturn_conn_loop:
+000088 b320      		in		temp2, PIND
+                 
+                 		; do three checks, all must pass for controller to be detected
+000089 e000      		ldi		temp0, 0
+00008a ff25      		sbrs	temp2, SAT_UP		; Up = 0
+00008b 9503      		inc		temp0
+00008c ff24      		sbrs	temp2, SAT_DN		; Down = 0
+00008d 9503      		inc		temp0
+00008e fd23      		sbrc	temp2, SAT_LF		; Left = 1
+00008f 9503      		inc		temp0
+                 
+                 #ifndef debug_pad_always_connected
+000090 3003      		cpi		temp0, 3
+000091 f799      		brne	wait_saturn_conn
+                 #endif
+                 
+000092 e000      		ldi		temp0, 0
+000093 dfd5      		rcall	setflash
+                 
+000094 dfc3      		rcall	delay250ms
+                 
+000095 e001      		ldi		temp0, 0x01			; set connected flag to Saturn
+000096 2e20      		mov		conn, temp0
+                 
+                 		; Tournament mode default off
+000097 2477      		clr		tmode
+                 
+                 		; load last config state
+000098 d1b9      		rcall	eeprom_read_config
+000099 2d01      		mov		temp0, bmap
+                 
+                 		; TH = 1, TR = 1
+00009a ff22      		sbrs	temp2, SAT_RT		; L
+00009b e000      		ldi		temp0, 0			; default mapping
+                 
+                 		; TH = 0, TR = 0
+00009c 9891      		cbi		PORTD, SAT_TH
+00009d 9890      		cbi		PORTD, SAT_TR
+00009e d05d      		rcall	sat_delay
+00009f b320      		in		temp2, PIND
+0000a0 ff22      		sbrs	temp2, SAT_RT		; L
+0000a1 e000      		ldi		temp0, 0			; default mapping
+0000a2 ff23      		sbrs	temp2, SAT_LF		; X
+0000a3 e004      		ldi		temp0, 4
+0000a4 ff24      		sbrs	temp2, SAT_DN		; Y
+0000a5 e005      		ldi		temp0, 5
+0000a6 ff25      		sbrs	temp2, SAT_UP		; Z
+0000a7 e006      		ldi		temp0, 6
+                 
+                 		; TH = 1, TR = 0
+0000a8 9a91      		sbi		PORTD, SAT_TH
+0000a9 9890      		cbi		PORTD, SAT_TR
+0000aa d051      		rcall	sat_delay
+0000ab b320      		in		temp2, PIND
+0000ac ef1f      		ldi		temp1, 0xff
+0000ad ff22      		sbrs	temp2, SAT_RT		; Start
+0000ae 2e71      		mov		tmode, temp1		; tournament mode
+0000af ff23      		sbrs	temp2, SAT_LF		; A
+0000b0 e001      		ldi		temp0, 1
+0000b1 ff24      		sbrs	temp2, SAT_DN		; C
+0000b2 e003      		ldi		temp0, 3
+0000b3 ff25      		sbrs	temp2, SAT_UP		; B
+0000b4 e002      		ldi		temp0, 2
+                 
+                 #ifdef build_standard
+                 		; PS2 Saturn Pad emulation jumper
+0000b5 9b86      		sbis	PIND, J_PSS
+0000b6 c018      		rjmp	emu_mode
+                 #endif
+                 #ifdef build_kyle
+                 #endif
+                 
+0000b7 2e10      		mov		bmap, temp0
+0000b8 d1b0      		rcall	eeprom_write_config
+                 
+0000b9 2077      		tst		tmode
+0000ba f099      		breq	sat_not_tmode
+                 
+                 		; Fast flash LED for 2s to indicate tournament mode selected
+0000bb e001      		ldi		temp0, 1
+0000bc dfac      		rcall	setflash
+                 		; Delay approx 1s
+0000bd 930f      		push	temp0
+0000be 931f      		push	temp1
+0000bf 932f      		push	temp2
+0000c0 e906      		ldi		temp0, 0x96 ;0x48
+                 wait_loop_1:
+0000c1 eb1c      		ldi		temp1, 0xbc
+                 wait_loop_2:
+0000c2 ec24      		ldi		temp2, 0xc4
+                 wait_loop_3:
+0000c3 952a      		dec		temp2
+0000c4 f7f1      		brne	wait_loop_3
+0000c5 951a      		dec		temp1
+0000c6 f7d9      		brne	wait_loop_2
+0000c7 950a      		dec		temp0
+0000c8 f7c1      		brne	wait_loop_1
+0000c9 912f      		pop		temp2
+0000ca 911f      		pop		temp1
+0000cb 910f      		pop		temp0
+                 		; Turn off flash
+0000cc e000      		ldi		temp0, 0
+0000cd df9b      		rcall	setflash
+                 
+                 sat_not_tmode:
+0000ce c00c      		rjmp	sat_wait_release
+                 
+                 emu_mode:
+0000cf e002      		ldi		temp0, 2			; fixed button mapping
+0000d0 2e10      		mov		bmap, temp0
+0000d1 c009      		rjmp	sat_wait_release
+                 
+0000d2 e001      		ldi		temp0, 1
+0000d3 df95      		rcall	setflash
+0000d4 df83      		rcall	delay250ms
+0000d5 df82      		rcall	delay250ms
+0000d6 df81      		rcall	delay250ms
+0000d7 df80      		rcall	delay250ms
+0000d8 e000      		ldi		temp0, 0
+0000d9 df8f      		rcall	setflash
+0000da 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Wait for all buttons to be released
+                 ;----------------------------------------------------------------------
+                 
+                 sat_wait_release:
+0000db 2700      		clr		temp0
+                 
+                 		; 11
+0000dc 9a91      		sbi		PORTD, SAT_TH
+0000dd 9a90      		sbi		PORTD, SAT_TR
+0000de d01d      		rcall	sat_delay
+0000df b320      		in		temp2, PIND
+0000e0 9520      		com		temp2
+0000e1 7024      		andi	temp2, (1<<SAT_RT)
+0000e2 2b02      		or		temp0, temp2
+                 
+                 		; 01
+0000e3 9891      		cbi		PORTD, SAT_TH
+0000e4 d017      		rcall	sat_delay
+0000e5 b320      		in		temp2, PIND
+0000e6 9520      		com		temp2
+0000e7 732c      		andi	temp2, (1<<SAT_UP)|(1<<SAT_DN)|(1<<SAT_LF)|(1<<SAT_RT)
+0000e8 2b02      		or		temp0, temp2
+                 
+                 		; 00
+0000e9 9890      		cbi		PORTD, SAT_TR
+0000ea d011      		rcall	sat_delay
+0000eb b320      		in		temp2, PIND
+0000ec 9520      		com		temp2
+0000ed 732c      		andi	temp2, (1<<SAT_UP)|(1<<SAT_DN)|(1<<SAT_LF)|(1<<SAT_RT)
+0000ee 2b02      		or		temp0, temp2
+                 
+                 		; 10
+0000ef 9a91      		sbi		PORTD, SAT_TH
+0000f0 d00b      		rcall	sat_delay
+0000f1 b320      		in		temp2, PIND
+0000f2 9520      		com		temp2
+0000f3 732c      		andi	temp2, (1<<SAT_UP)|(1<<SAT_DN)|(1<<SAT_LF)|(1<<SAT_RT)
+0000f4 2b02      		or		temp0, temp2
+                 
+0000f5 2300      		tst		temp0
+0000f6 f721      		brne	sat_wait_release
+                 
+0000f7 e302      		ldi		temp0, 50
+                 sat_wait_release_debounce:
+0000f8 d003      		rcall	sat_delay
+0000f9 950a      		dec		temp0
+0000fa f7e9      		brne	sat_wait_release_debounce
+                 
+0000fb 9508      		ret
+                 
+                 ;----------------------------------------------------------------------
+                 ; Delay ~2us for Saturn controller to respond
+                 ;----------------------------------------------------------------------
+                 
+                 sat_delay:
+0000fc 934f      		push	temp4
+0000fd e042      		ldi		temp4, 0x02
+                 sat_delay_loop:
+0000fe 954a      		dec		temp4
+0000ff f7f1      		brne	sat_delay_loop
+000100 914f      		pop		temp4
+000101 9508      		ret
+                 
+                 .include "psx.asm"
+                 
+                 ; Saturn to Playstation mode
+                 ;----------------------------------------------------------------------
+                 
+                 ; short jumps for branches
+                 ps_sat_discon_exit2:
+000102 cf51      		rjmp	wait_conn
+                 
+                 ps_sat_disconnected:
+000103 2422      		clr		conn
+000104 cf7e      		rjmp	sat_disconnected
+                 
+                 psx_mode:
+                 ps_loop:
+000105 98be      		cbi		DDRB, PS_DAT			; release Data
+                 
+                 ps_wait_att:
+000106 df6e      		rcall	check_sat_con
+000107 2022      		tst		conn
+000108 f3c9      		breq	ps_sat_discon_exit2
+000109 99b3      		sbic	PINB, PS_ATT
+00010a cffb      		rjmp	ps_wait_att
+                 
+                 		; Main PSX servicing section
+00010b 94f8      		cli								; interrupts disabled for duration of comms
+                 
+00010c d042      		rcall	psx_sat1_setup
+                 
+00010d ef8f      		ldi		psx0, 0xff				; PSX data bytes
+00010e ef9f      		ldi		psx1, 0xff
+00010f 2444      		clr		afbutton
+                 
+                 		// Byte 0 
+000110 ef0f      		ldi		temp0, 0xff				; 1st data is null
+000111 d02b      		rcall	psx_io
+000112 d03f      		rcall	psx_sat1_read			; read saturn
+000113 d085      		rcall	psx_sat2_setup			; prepare for next read
+000114 d034      		rcall	psx_io_wait				; wait for PSX IO to finish
+                 
+000115 3810      		cpi		temp1, 0x80 			; (0x01) check for ID command
+000116 f4f1      		brne	ps_io_finished
+                 
+                 		// Byte 1 
+000117 e802      		ldi		temp0, 0x82				; (0x41) digital pad (analogue red / dual shock = 73)
+000118 d024      		rcall	psx_io
+000119 d110      		rcall	psx_ack					; ACK for byte 0, need to have started IO by this point
+                 										; as there is not enough time to start it after returning
+                 										; from the ACK
+00011a d081      		rcall	psx_sat2_read
+00011b d0e9      		rcall	psx_sat4_setup
+00011c d02c      		rcall	psx_io_wait
+                 
+00011d 3412      		cpi		temp1, 0x42				; check for READ command
+00011e f009      		breq	ps_cmd_read
+                 
+00011f c015      		rjmp	ps_io_finished
+                 
+                 ps_cmd_read:
+                 		// Byte 2 
+000120 e50a      		ldi		temp0, 0x5a				; data ready
+000121 d01b      		rcall	psx_io
+000122 d107      		rcall	psx_ack
+000123 d0e4      		rcall	psx_sat4_read
+000124 d081      		rcall	psx_sat3_setup
+                 		
+                 		; Tournament mode
+000125 fc70      		sbrc	tmode, 0
+000126 6088      		sbr		psx0, (1<<3)			; clear start button
+                 
+                 		// Byte 3 
+000127 2f08      		mov		temp0, psx0				; data byte 0
+000128 d109      		rcall	swapbits
+000129 d01f      		rcall	psx_io_wait
+00012a d012      		rcall	psx_io
+00012b d0fe      		rcall	psx_ack
+00012c d07c      		rcall	psx_sat3_read
+00012d d021      		rcall	psx_sat1_setup
+                 
+                 		// Byte 4
+00012e 2f09      		mov		temp0, psx1				; data byte 1
+00012f d102      		rcall	swapbits
+000130 d018      		rcall	psx_io_wait
+000131 d00b      		rcall	psx_io
+000132 d0f7      		rcall	psx_ack
+000133 d015      		rcall	psx_io_wait
+                 
+000134 98be      		cbi		DDRB, PS_DAT			; release Data
+                 
+                 ps_io_finished:
+000135 9478      		sei								; interrupts back on
+                 
+                 		; wait for ATT to go high again
+                 ps_io_wait_att_high:
+000136 9bb3      		sbis	PINB, PS_ATT
+000137 cffe      		rjmp	ps_io_wait_att_high
+                 
+000138 df3c      		rcall	check_sat_con
+000139 2022      		tst		conn
+00013a f009      		breq	ps_sat_discon_exit
+                 
+00013b cfc9      		rjmp	ps_loop
+                 
+                 ; needs to be close to main loop for conditional brance
+                 ps_sat_discon_exit:
+00013c cf17      		rjmp	wait_conn
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Playstation I/O
+                 ;
+                 ; Send byte in temp0
+                 ;----------------------------------------------------------------------
+                 
+                 psx_io:
+00013d 931f      		push	temp1
+                 
+00013e b90f      		out		USIDR, temp0			; byte to send
+                 
+00013f 9abe      		sbi		DDRB, PS_DAT
+000140 98bf      		cbi		DDRB, PS_CLK
+000141 98bd      		cbi		DDRB, PS_CMD
+000142 98bb      		cbi		DDRB, PS_ATT
+                 		;sbi		PORTD, PS_ATT
+                 
+000143 e410      		ldi		temp1, (1<<USIOIF)
+000144 b91e      		out		USISR, temp1			; reset counter
+000145 e118      		ldi		temp1, (1<<USIWM0)|(1<<USICS1)
+000146 b91d      		out		USICR, temp1			; start SPI transfer
+                 
+000147 911f      		pop		temp1
+000148 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Wait for Playstation I/O to finish
+                 ;
+                 ; Received byte in temp1
+                 ;----------------------------------------------------------------------
+                 
+                 psx_io_wait:
+000149 99b3      		sbic	PINB, PS_ATT			; make sure ATT is held, if not timeout
+00014a cfea      		rjmp	ps_io_finished
+00014b 9b76      		sbis	USISR, USIOIF			; wait for SPI transfer to finish
+00014c cffc      		rjmp	psx_io_wait
+                 
+00014d b11f      		in		temp1, USIDR			; byte received
+                 
+00014e 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Playstation ACK with Saturn I/O interleaved                         
+                 ;----------------------------------------------------------------------
+                 
+                 psx_sat1_setup:
+                 		; TH = 1, TR = 0
+00014f 9a91      		sbi		PORTD, SAT_TH
+000150 9890      		cbi		PORTD, SAT_TR
+                 		;rcall	sat_delay			; 2us delay
+000151 9508      		ret
+                 
+                 psx_sat1_read:
+000152 b320      		in		temp2, PIND
+                 
+000153 ef5f      		ldi		startf, 0xff
+                 
+                 #ifdef build_standard
+000154 ff22      		sbrs	temp2, SAT_RT		; Start
+000155 c037      		rjmp	psx_sat01_start_abc
+                 #endif
+                 #ifdef build_kyle
+                 #endif
+                 
+                 		; button mapping
+                 psx_sat01_decode:
+000156 e0f1      		ldi		ZH, HIGH(psx_sat01_jump)
+000157 e5ee      		ldi		ZL, LOW(psx_sat01_jump)
+000158 2d01      		mov		temp0, bmap
+000159 730f      		andi	temp0, 0b00111111
+00015a 0fe0      		add		ZL, temp0
+00015b 2700      		clr		temp0
+00015c 1ff0      		adc		ZH, temp0
+00015d 9409      		ijmp
+                 psx_sat01_jump:
+00015e c006      		rjmp	psx_sat01_def
+00015f c005      		rjmp	psx_sat01_a
+000160 c00b      		rjmp	psx_sat01_b
+000161 c011      		rjmp	psx_sat01_c
+000162 c015      		rjmp	psx_sat01_x
+000163 c01b      		rjmp	psx_sat01_y
+000164 c021      		rjmp	psx_sat01_z
+                 
+                 		; unknown button mapping = default
+                 
+                 		; byte 0
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	SL			ST	UP	RT	DN	LF
+                 		; byte 1
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	L2	R2	L1	R1	/\	O	X	[]
+                 
+                 psx_sat01_def:
+                 psx_sat01_a:
+000165 ff23      		sbrs	temp2, SAT_LF		; A -> X 
+000166 7b9f      		andi	psx1, ~(1<<6)
+000167 ff25      		sbrs	temp2, SAT_UP		; B -> O 
+000168 7d9f      		andi	psx1, ~(1<<5)
+000169 ff24      		sbrs	temp2, SAT_DN		; C -> R2
+00016a 7f9d      		andi	psx1, ~(1<<1)
+                 		;rjmp	psx_sat01_done
+00016b 9508      		ret
+                 
+                 psx_sat01_b:
+                 #ifdef build_standard
+00016c ff23      		sbrs	temp2, SAT_LF		; A -> X
+00016d 7b9f      		andi	psx1, ~(1<<6)
+00016e ff25      		sbrs	temp2, SAT_UP		; B -> O
+00016f 7d9f      		andi	psx1, ~(1<<5)
+000170 ff24      		sbrs	temp2, SAT_DN		; C -> R1
+000171 7f97      		andi	psx1, ~(1<<3)
+                 #endif
+                 #ifdef build_kyle
+                 #endif
+                 		;rjmp	psx_sat01_done
+000172 9508      		ret
+                 
+                 psx_sat01_c:
+000173 ff23      		sbrs	temp2, SAT_LF		; A -> []
+000174 779f      		andi	psx1, ~(1<<7)
+                 		;sbrs	temp2, SAT_UP		; B -> Select (removed for Guilty Gear)
+                 		;andi	psx0, ~(1<<0)
+000175 ff24      		sbrs	temp2, SAT_DN		; C -> R1
+000176 7f97      		andi	psx1, ~(1<<3)
+                 		;rjmp	psx_sat01_done
+000177 9508      		ret
+                 
+                 #ifndef build_xcon
+                 #endif
+                 #ifdef build_xcon
+                 psx_sat01_x:
+000178 ff23      		sbrs	temp2, SAT_LF		; A -> X
+000179 7b9f      		andi	psx1, ~(1<<6)
+00017a ff25      		sbrs	temp2, SAT_UP		; B -> R2
+00017b 7f9d      		andi	psx1, ~(1<<1)
+00017c ff24      		sbrs	temp2, SAT_DN		; C -> R1
+00017d 7f97      		andi	psx1, ~(1<<3)
+                 		;rjmp	psx_sat01_done
+00017e 9508      		ret
+                 #endif
+                 
+                 psx_sat01_y:
+00017f ff25      		sbrs	temp2, SAT_UP		; B -> O 
+000180 7d9f      		andi	psx1, ~(1<<5)
+000181 ff24      		sbrs	temp2, SAT_DN		; C -> []
+000182 779f      		andi	psx1, ~(1<<7)
+000183 ff23      		sbrs	temp2, SAT_LF		; A -> X 
+000184 7b9f      		andi	psx1, ~(1<<6)
+                 		;rjmp	psx_sat01_done
+000185 9508      		ret
+                 
+                 psx_sat01_z:
+000186 ff25      		sbrs	temp2, SAT_UP		; B -> /\ 
+000187 7e9f      		andi	psx1, ~(1<<4)
+000188 ff24      		sbrs	temp2, SAT_DN		; C -> O 
+000189 7d9f      		andi	psx1, ~(1<<5)
+00018a ff23      		sbrs	temp2, SAT_LF		; A -> [] 
+00018b 779f      		andi	psx1, ~(1<<7)
+                 		;rjmp	psx_sat01_done
+00018c 9508      		ret
+                 
+                 psx_sat01_start_abc:
+                 		; Start/Home disbaled in tournament mode
+00018d fc70      		sbrc	tmode, 0
+00018e c007      		rjmp	psx_sat01_tmode
+                 
+00018f ff25      		sbrs	temp2, SAT_UP		; B -> Select
+000190 7f8e      		andi	psx0, ~(1<<0)
+000191 ff23      		sbrs	temp2, SAT_LF		; A -> Start
+000192 7f87      		andi	psx0, ~(1<<3)
+000193 ff24      		sbrs	temp2, SAT_DN		; C -> PS Home
+000194 7e86      		andi	psx0, ~((1<<3)|(1<<0)|(1<<4))
+                 		;rjmp	psx_sat01_done
+000195 9508      		ret
+                 
+                 psx_sat01_tmode:
+                 		; In tournament mode Start -> Select
+000196 7f8e      		andi	psx0, ~(1<<0)
+                 		;rjmp	psx_sat01_decode
+000197 9508      		ret
+                 
+                 psx_sat01_done:
+000198 9508      		ret
+                 
+                 
+                 ;-----------------------------------------------------------------------------
+                 
+                 psx_sat2_setup:
+                 		; TH = 0, TR = 1
+000199 9891      		cbi		PORTD, SAT_TH
+00019a 9a90      		sbi		PORTD, SAT_TR
+                 		;rcall	sat_delay			; 2us delay
+00019b 9508      		ret
+                 
+                 psx_sat2_read:
+00019c b320      		in		temp2, PIND
+                 
+                 		; all button mappings are the same for d-pad
+                 
+                 		; byte 0
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	SL			ST	UP	RT	DN	LF
+                 
+00019d ff24      		sbrs	temp2, SAT_DN		; Down
+00019e 7b8f      		andi	psx0, ~(1<<6)
+00019f ff25      		sbrs	temp2, SAT_UP		; Up
+0001a0 7e8f      		andi	psx0, ~(1<<4)
+0001a1 ff23      		sbrs	temp2, SAT_LF		; Left
+0001a2 778f      		andi	psx0, ~(1<<7)
+0001a3 ff22      		sbrs	temp2, SAT_RT		; Right
+0001a4 7d8f      		andi	psx0, ~(1<<5)
+0001a5 9508      		ret
+                 
+                 
+                 ;-----------------------------------------------------------------------------
+                 
+                 psx_sat3_setup:
+                 		; TH = 0, TR = 0
+0001a6 9891      		cbi		PORTD, SAT_TH
+0001a7 9890      		cbi		PORTD, SAT_TR
+                 		;rcall	sat_delay			; 2us delay
+0001a8 9508      		ret
+                 
+                 psx_sat3_read:
+0001a9 b320      		in		temp2, PIND
+                 
+                 		; button mapping
+0001aa e0f1      		ldi		ZH, HIGH(psx_sat00_jump)
+0001ab ebe2      		ldi		ZL, LOW(psx_sat00_jump)
+0001ac 2d01      		mov		temp0, bmap
+0001ad 730f      		andi	temp0, 0b00111111
+0001ae 0fe0      		add		ZL, temp0
+0001af 2700      		clr		temp0
+0001b0 1ff0      		adc		ZH, temp0
+0001b1 9409      		ijmp
+                 psx_sat00_jump:
+0001b2 c006      		rjmp	psx_sat00_def
+0001b3 c011      		rjmp	psx_sat00_a
+0001b4 c019      		rjmp	psx_sat00_b
+0001b5 c021      		rjmp	psx_sat00_c
+0001b6 c029      		rjmp	psx_sat00_x
+0001b7 c031      		rjmp	psx_sat00_y
+0001b8 c03d      		rjmp	psx_sat00_z
+                 
+                 		; unknown button mapping = default
+                 
+                 		; byte 0
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	SL			ST	UP	RT	DN	LF
+                 		; byte 1
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	L2	R2	L1	R1	/\	O	X	[]
+                 
+                 psx_sat00_def:
+0001b9 ff23      		sbrs	temp2, SAT_LF		; X -> []
+0001ba 779f      		andi	psx1, ~(1<<7)
+0001bb ff24      		sbrs	temp2, SAT_DN		; Y -> /\
+0001bc 7e9f      		andi	psx1, ~(1<<4)
+0001bd ff25      		sbrs	temp2, SAT_UP		; Z -> L2
+0001be 7f9e      		andi	psx1, ~(1<<0)
+0001bf 2d15      		mov		temp1, autospeed
+0001c0 3010      		cpi		temp1, 0
+0001c1 f5f9      		brne	psx_sat00_autof
+0001c2 ff22      		sbrs	temp2, SAT_RT		; R -> R1
+0001c3 7f97      		andi	psx1, ~(1<<3)
+0001c4 c03f      		rjmp	psx_sat00_done
+                 
+                 psx_sat00_a:
+0001c5 ff23      		sbrs	temp2, SAT_LF		; X -> []
+0001c6 779f      		andi	psx1, ~(1<<7)
+0001c7 ff24      		sbrs	temp2, SAT_DN		; Y -> /\
+0001c8 7e9f      		andi	psx1, ~(1<<4)
+0001c9 ff25      		sbrs	temp2, SAT_UP		; Z -> R1
+0001ca 7f97      		andi	psx1, ~(1<<3)
+0001cb ff22      		sbrs	temp2, SAT_RT		; R -> L2
+0001cc 7f9e      		andi	psx1, ~(1<<0)
+0001cd c036      		rjmp	psx_sat00_done
+                 
+                 psx_sat00_b:	// PS2 Saturn Emulation 
+                 #ifdef build_standard
+0001ce ff23      		sbrs	temp2, SAT_LF		; X -> /\
+0001cf 7e9f      		andi	psx1, ~(1<<4)
+0001d0 ff24      		sbrs	temp2, SAT_DN		; Y -> []
+0001d1 779f      		andi	psx1, ~(1<<7)
+0001d2 ff25      		sbrs	temp2, SAT_UP		; Z -> L1
+0001d3 7f9b      		andi	psx1, ~(1<<2)
+0001d4 ff22      		sbrs	temp2, SAT_RT		; R -> R2
+0001d5 7f9d      		andi	psx1, ~(1<<1)
+                 #endif
+                 #ifdef build_kyle
+                 #endif
+0001d6 c02d      		rjmp	psx_sat00_done
+                 
+                 psx_sat00_c:
+0001d7 ff23      		sbrs	temp2, SAT_LF		; X -> X 
+0001d8 7b9f      		andi	psx1, ~(1<<6)
+0001d9 ff24      		sbrs	temp2, SAT_DN		; Y -> /\
+0001da 7e9f      		andi	psx1, ~(1<<4)
+0001db ff25      		sbrs	temp2, SAT_UP		; Z -> O 
+0001dc 7d9f      		andi	psx1, ~(1<<5)
+0001dd ff22      		sbrs	temp2, SAT_RT		; R -> R2
+0001de 7f9d      		andi	psx1, ~(1<<1)
+0001df c024      		rjmp	psx_sat00_done
+                 
+                 #ifndef build_xcon
+                 #endif
+                 #ifdef build_xcon
+                 psx_sat00_x:
+0001e0 ff23      		sbrs	temp2, SAT_LF		; X -> /\
+0001e1 7e9f      		andi	psx1, ~(1<<4)
+0001e2 ff24      		sbrs	temp2, SAT_DN		; Y -> []
+0001e3 779f      		andi	psx1, ~(1<<7)
+0001e4 ff25      		sbrs	temp2, SAT_UP		; Z -> O 
+0001e5 7d9f      		andi	psx1, ~(1<<5)
+0001e6 ff22      		sbrs	temp2, SAT_RT		; R -> L1
+0001e7 7f9b      		andi	psx1, ~(1<<2)
+0001e8 c01b      		rjmp	psx_sat00_done
+                 #endif
+                 
+                 psx_sat00_y:	// Autofire 
+                 		; autofire inactive in tournament mode
+0001e9 fc70      		sbrc	tmode, 0
+0001ea c019      		rjmp	psx_sat00_done
+                 
+0001eb fca0      		sbrc	afflag, 0
+0001ec c017      		rjmp	psx_sat00_done
+                 
+0001ed ff23      		sbrs	temp2, SAT_LF		; X -> X (AF)
+0001ee 7b9f      		andi	psx1, ~(1<<6)
+0001ef ff24      		sbrs	temp2, SAT_DN		; Y -> O (AF)
+0001f0 7d9f      		andi	psx1, ~(1<<5)
+0001f1 ff25      		sbrs	temp2, SAT_UP		; Z -> [] (AF)
+0001f2 779f      		andi	psx1, ~(1<<7)
+0001f3 ff22      		sbrs	temp2, SAT_RT		; R -> /\ (AF)
+0001f4 7e9f      		andi	psx1, ~(1<<4)
+0001f5 c00e      		rjmp	psx_sat00_done
+                 
+                 psx_sat00_z:
+0001f6 ff23      		sbrs	temp2, SAT_LF		; X -> []
+0001f7 779f      		andi	psx1, ~(1<<7)
+0001f8 ff24      		sbrs	temp2, SAT_DN		; Y -> /\
+0001f9 7e9f      		andi	psx1, ~(1<<4)
+0001fa ff25      		sbrs	temp2, SAT_UP		; Z -> O 
+0001fb 7d9f      		andi	psx1, ~(1<<5)
+0001fc ff22      		sbrs	temp2, SAT_RT		; R -> /\ + O 
+0001fd 7e9f      		andi	psx1, ~(1<<4)
+0001fe ff22      		sbrs	temp2, SAT_RT		; R -> /\ + O 
+0001ff 7d9f      		andi	psx1, ~(1<<5)
+000200 c003      		rjmp	psx_sat00_done
+                 
+                 psx_sat00_autof:
+000201 ff22      		sbrs	temp2, SAT_RT		; R -> autofire
+000202 9443      		inc		afbutton
+000203 c000      		rjmp	psx_sat00_done
+                 
+                 psx_sat00_done:
+000204 9508      		ret
+                 
+                 
+                 ;-----------------------------------------------------------------------------
+                 
+                 psx_sat4_setup:
+                 		; TH = 1, TR = 1
+000205 9a91      		sbi		PORTD, SAT_TH
+000206 9a90      		sbi		PORTD, SAT_TR
+                 		;rcall	sat_delay			; 2us delay
+000207 9508      		ret
+                 
+                 psx_sat4_read:
+000208 b320      		in		temp2, PIND
+                 
+                 		; button mapping
+000209 e0f2      		ldi		ZH, HIGH(psx_sat11_jump)
+00020a e1e1      		ldi		ZL, LOW(psx_sat11_jump)
+00020b 2d01      		mov		temp0, bmap
+00020c 730f      		andi	temp0, 0b00111111
+00020d 0fe0      		add		ZL, temp0
+00020e 2700      		clr		temp0
+00020f 1ff0      		adc		ZH, temp0
+000210 9409      		ijmp
+                 psx_sat11_jump:
+000211 c006      		rjmp	psx_sat11_def
+000212 c005      		rjmp	psx_sat11_a
+000213 c007      		rjmp	psx_sat11_b
+000214 c003      		rjmp	psx_sat11_c
+000215 c008      		rjmp	psx_sat11_x
+000216 c00a      		rjmp	psx_sat11_y
+000217 c00c      		rjmp	psx_sat11_z
+                 
+                 		; unknown button mapping = default
+                 
+                 		; byte 0
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	SL			ST	UP	RT	DN	LF
+                 		; byte 1
+                 		; 	0	1	2	3	4	5	6	7
+                 		; 	L2	R2	L1	R1	/\	O	X	[]
+                 
+                 psx_sat11_def:
+                 psx_sat11_a:
+                 psx_sat11_c:
+000218 ff22      		sbrs	temp2, SAT_RT		; L -> L1
+000219 7f9b      		andi	psx1, ~(1<<2)
+00021a c00e      		rjmp	psx_sat11_done
+                 
+                 psx_sat11_b:
+                 #ifdef build_standard
+00021b ff22      		sbrs	temp2, SAT_RT		; L -> L2
+00021c 7f9e      		andi	psx1, ~(1<<0)
+                 #endif
+                 #ifdef build_kyle
+                 #endif
+00021d c00b      		rjmp	psx_sat11_done
+                 
+                 psx_sat11_x:
+00021e ff22      		sbrs	temp2, SAT_RT		; L -> L2
+00021f 7f9e      		andi	psx1, ~(1<<0)
+000220 c008      		rjmp	psx_sat11_done
+                 
+                 psx_sat11_y:
+000221 ff22      		sbrs	temp2, SAT_RT		; L -> /\
+000222 7e9f      		andi	psx1, ~(1<<4)
+000223 c005      		rjmp	psx_sat11_done
+                 
+                 psx_sat11_z:
+000224 ff22      		sbrs	temp2, SAT_RT		; L -> /\ + []
+000225 7e9f      		andi	psx1, ~(1<<4)		; /\ 
+000226 ff22      		sbrs	temp2, SAT_RT		; L -> /\ + []
+000227 779f      		andi	psx1, ~(1<<7)		; []
+000228 c000      		rjmp	psx_sat11_done
+                 
+                 psx_sat11_done:
+000229 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Playstation ACK ~2us
+                 ;----------------------------------------------------------------------
+                 
+                 psx_ack:
+00022a 930f      		push	temp0
+                 
+                 ;		ldi		temp0, 12			; pre-delay
+                 ;psx_ack_pre_loop:
+                 ;		dec		temp0
+                 ;		brne	psx_ack_pre_loop
+                 
+00022b 9abc      		sbi		DDRB, PS_ACK
+                 
+00022c e005      		ldi		temp0, 5			; 2us (10 = 4us)
+                 psx_ack_loop:
+00022d 950a      		dec		temp0
+00022e f7f1      		brne	psx_ack_loop
+                 
+00022f 98bc      		cbi		DDRB, PS_ACK
+000230 910f      		pop		temp0
+000231 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Swap bits in temp0
+                 ;
+                 ; Trash temp1
+                 ;----------------------------------------------------------------------
+                 
+                 swapbits:
+000232 9507      		ror 	temp0
+000233 1f11      		rol 	temp1
+000234 9507      		ror 	temp0
+000235 1f11      		rol 	temp1
+000236 9507      		ror 	temp0
+000237 1f11      		rol 	temp1
+000238 9507      		ror 	temp0
+000239 1f11      		rol 	temp1
+00023a 9507      		ror 	temp0
+00023b 1f11      		rol 	temp1
+00023c 9507      		ror 	temp0
+00023d 1f11      		rol 	temp1
+00023e 9507      		ror 	temp0
+00023f 1f11      		rol 	temp1
+000240 9507      		ror 	temp0
+000241 1f11      		rol 	temp1
+000242 2f01      		mov		temp0, temp1
+000243 9508      		ret
+                 
+                 ;----------------------------------------------------------------------
+                 ; Debug
+                 ;----------------------------------------------------------------------
+                 
+                 psx_debug:
+000244 9abc      		sbi		DDRB, PS_ACK
+000245 98bc      		cbi		DDRB, PS_ACK
+000246 9abc      		sbi		DDRB, PS_ACK
+000247 98bc      		cbi		DDRB, PS_ACK
+000248 9abc      		sbi		DDRB, PS_ACK
+000249 98bc      		cbi		DDRB, PS_ACK
+00024a 9abc      		sbi		DDRB, PS_ACK
+00024b 98bc      		cbi		DDRB, PS_ACK
+00024c 9508      ret
+                 
+                 
+                 sat_update_delay:
+00024d 0000      		nop
+00024e 0000      		nop
+00024f 0000      		nop
+000250 0000      		nop
+000251 9508      		ret
+                 .include "eeprom.asm"
+                 
+                 ; Read config bytes from EEPROM
+                 ;----------------------------------------------------------------------
+                 
+                 eeprom_read_config:
+000252 930f      		push	temp0
+000253 931f      		push	temp1
+                 
+000254 e0f0      		ldi		ZH, 0
+000255 e0e0      		ldi		ZL, 0
+                 
+000256 d00b      		rcall	eeprom_read_byte	; button mapping
+000257 2e10      		mov		bmap, temp0
+                 		
+                 		; button mapping sanity checking
+000258 2d01      		mov		temp0, bmap
+000259 3007      		cpi		temp0, HIGHMAP+1	; highest mapping
+00025a f418      		brsh	eeprom_read_invalid
+                 
+00025b 911f      		pop		temp1
+00025c 910f      		pop		temp0
+00025d 9508      		ret
+                 
+                 eeprom_read_invalid:
+                 		; reset to defaults
+00025e 2411      		clr		bmap
+                 		
+00025f 911f      		pop		temp1
+000260 910f      		pop		temp0
+000261 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Read byte from EEPROM address Z to temp0, increment Z
+                 ;----------------------------------------------------------------------
+                 
+                 eeprom_read_byte:
+000262 99e1      		sbic	EECR, EEWE		; wait for completion of previous write
+000263 cffe      		rjmp	eeprom_read_byte
+                 
+000264 bbee      		out		EEARL, ZL
+000265 9631      		adiw	Z, 1			; increment address
+                 
+000266 9ae0      		sbi		EECR, EERE		; read mode
+000267 b30d      		in		temp0, EEDR		; read byte
+000268 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Write config bytes to EEPROM
+                 ;----------------------------------------------------------------------
+                 
+                 eeprom_write_config:
+000269 930f      		push	temp0
+                 
+00026a e0f0      		ldi		ZH, 0
+00026b e0e0      		ldi		ZL, 0
+                 
+00026c 2d01      		mov		temp0, bmap			; button mapping
+00026d d002      		rcall	eeprom_write_byte
+                 
+00026e 910f      		pop		temp0
+00026f 9508      		ret
+                 
+                 
+                 ;----------------------------------------------------------------------
+                 ; Write byte in temp0 to EEPROM address Z, increment Z
+                 ;----------------------------------------------------------------------
+                 
+                 eeprom_write_byte:
+000270 99e1      		sbic	EECR, EEWE		; wait for completion of previous write
+000271 cffe      		rjmp	eeprom_write_byte
+                 
+000272 bbee      		out		EEARL, ZL		; load address
+000273 9631      		adiw	Z, 1			; increment address
+                 
+000274 bb0d      		out		EEDR, temp0		; byte to write
+000275 9ae2      		sbi		EECR, EEMWE		; write mode
+000276 9ae1      		sbi		EECR, EEWE		; start write
+000277 9508      		ret
+                 ;.include "bit_reverse_lut.asm"
+
+
+RESOURCE USE INFORMATION
+------------------------
+
+Notice:
+The register and instruction counts are symbol table hit counts,
+and hence implicitly used resources are not counted, eg, the
+'lpm' instruction without operands implicitly uses r0 and z,
+none of which are counted.
+
+x,y,z are separate entities in the symbol table and are
+counted separately from r26..r31 here.
+
+.dseg memory usage only counts static data declared with .byte
+
+ATtiny2313 register use summary:
+r0 :   0 r1 :  11 r2 :   6 r3 :   2 r4 :   3 r5 :   2 r6 :   1 r7 :   7 
+r8 :   0 r9 :   0 r10:   3 r11:   4 r12:   2 r13:   6 r14:   3 r15:   0 
+r16: 136 r17:  33 r18: 108 r19:   0 r20:   4 r21:   2 r22:   0 r23:   0 
+r24:  11 r25:  54 r26:   0 r27:   0 r28:   0 r29:   0 r30:  10 r31:   8 
+x  :   0 y  :   0 z  :   2 
+Registers used: 22 out of 35 (62.9%)
+
+ATtiny2313 instruction use summary:
+.lds  :   0 .sts  :   0 adc   :   3 add   :   3 adiw  :   2 and   :   1 
+andi  :  67 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :   5 brge  :   0 brhc  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
+brne  :  15 brpl  :   0 brsh  :   1 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 cbi   :  21 cbr   :   0 clc   :   0 
+clh   :   0 cli   :   1 cln   :   0 clr   :  18 cls   :   0 clt   :   0 
+clv   :   0 clz   :   0 com   :   6 cp    :   0 cpc   :   0 cpi   :   6 
+cpse  :   0 dec   :   9 eor   :   0 icall :   0 ijmp  :   3 in    :  18 
+inc   :   9 ld    :   0 ldd   :   0 ldi   :  62 lds   :   0 lpm   :   0 
+lsl   :   0 lsr   :   0 mov   :  20 movw  :   0 neg   :   0 nop   :   4 
+or    :   4 ori   :   5 out   :  24 pop   :  14 push  :  12 rcall :  52 
+ret   :  35 reti  :  18 rjmp  :  57 rol   :   8 ror   :   8 sbc   :   0 
+sbci  :   0 sbi   :  23 sbic  :   4 sbis  :   3 sbiw  :   0 sbr   :   1 
+sbrc  :   7 sbrs  :  75 sec   :   0 seh   :   0 sei   :   2 sen   :   0 
+ser   :   0 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 
+spm   :   0 st    :   0 std   :   0 sts   :   0 sub   :   0 subi  :   0 
+swap  :   0 tst   :   5 wdr   :   1 
+Instructions used: 40 out of 105 (38.1%)
+
+ATtiny2313 memory use summary [bytes]:
+Segment   Begin    End      Code   Data   Used    Size   Use%
+---------------------------------------------------------------
+[.cseg] 0x000000 0x0004f0   1264      0   1264    2048  61.7%
+[.dseg] 0x000060 0x000060      0      0      0     128   0.0%
+[.eseg] 0x000000 0x000000      0      0      0     128   0.0%
+
+Assembly complete, 0 errors, 0 warnings

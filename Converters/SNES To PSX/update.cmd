@@ -1,0 +1,1 @@
+avrdude -p t2313 -B 1 -V -U flash:w:SNES_to_PSX.hex

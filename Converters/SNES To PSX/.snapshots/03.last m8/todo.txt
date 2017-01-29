@@ -1,0 +1,3 @@
+- swap latch/clock lines
+- tournament mode ?
+- further testing

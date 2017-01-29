@@ -1,0 +1,2 @@
+- tournament mode ?
+- further testing

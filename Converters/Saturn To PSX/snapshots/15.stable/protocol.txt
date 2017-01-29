@@ -1,0 +1,44 @@
+= Saturn =
+
+Left            Right
+ .-----------------.
+| 1 2 3 4 5 6 7 8 9 |
++-=-=-=-=-=-=-=-=-=-+
+
+Pin 1 - +5v
+Pin 2 - D1 (Down)
+Pin 3 - D0 (Up)
+Pin 4 - D6 (TH)
+Pin 5 - D5 (TR)
+Pin 6 - D4 (TL)
+Pin 7 - D3 (Right)
+Pin 8 - D2 (Left)
+Pin 9 - Ground
+ 
+TH = 1, TR = 1
+
+	RT : Left shoulder
+	LF : Always '1'
+	DN : Always '0'
+	UP : Always '0'
+
+TH = 1, TR = 0
+
+	RT : Start
+	LF : A
+	DN : C
+	UP : B
+
+TH = 0, TR = 1
+
+	RT : Right
+	LF : Left
+	DN : Down
+	UP : Up
+
+TH = 0, TR = 0
+
+	RT : Right shoulder
+	LF : X
+	DN : Y
+	UP : Z

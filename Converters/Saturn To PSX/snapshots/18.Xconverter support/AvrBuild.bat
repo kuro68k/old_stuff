@@ -1,0 +1,2 @@
+@ECHO OFF
+"C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\avrasm2.exe" -S "E:\code\AVR\Converters\Saturn To PSX\labels.tmp" -fI -W+ie -C V2 -o "E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.hex" -d "E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.obj" -e "E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.eep" -m "E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.map" -l "E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.lst" "E:\code\AVR\Converters\Saturn To PSX\Saturn_to_PSX.asm"
