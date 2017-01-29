@@ -244,3 +244,4 @@ Joystick/joystick/descriptor_feature.hid
 Hardware/Receiver/ReceiverE5.xml
 *.o
 *.d
+*.map
